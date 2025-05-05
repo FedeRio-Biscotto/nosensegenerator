@@ -1,4 +1,5 @@
 @startuml Domain_Model
+!include Graphic.puml
 
 'Grafico
 actor User
