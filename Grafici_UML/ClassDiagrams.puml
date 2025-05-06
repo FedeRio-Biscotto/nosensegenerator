@@ -1,0 +1,48 @@
+@startuml
+
+class Sentence{
+    -Sentence: String
+    +getSentence(): Sentence
+    +setSentece(t: String): void
+    
+}
+
+class Dictionary{
+    -Names: List<Name>
+    -Verbs: List<Verb>
+    -Adjectives: List<Adjective>
+    ''+chooseTokens(names: int, verbs: int, adj: int ): List<Token>
+    +getNames(nameNumber: int): List<Name>
+    +getVerbs(VerbNumber: int): List<Verb>
+    +getAdj(adjNumber: int): List<Adjective>
+    -chooseToken(List<Token>): Token
+}
+
+class Templates{
+    -TemplatesList: List<template>
+    +getTemplate(): Template
+    +fillTemplate(t: Template, names: List<Name>, verbs: List<Verb>, adj: List<Adjective>): Sentence
+}
+
+class Template{
+    +Template(template:List<Object>)
+    -names
+    -verbs
+    -adj
+    /'-setNamesNumber()
+    -setAdjsNumber()
+    -setVerbsNumber()'/
+    +getNames(): int
+    +getAdj(): int
+    +getVerbs(): int
+    +getTemplate(): String
+}
+
+class Analizer{
+    +getAnalyses(sentenceIn: Sentence): List<Token>
+}
+
+
+Sentence --> Dictionary : dioporco
+
+@enduml
