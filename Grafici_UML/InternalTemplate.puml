@@ -1,0 +1,7 @@
+@startuml InternalTemplate
+
+Generator --> Templates: getTemplate()
+Templates --> Generator: return Template
+
+
+@enduml
