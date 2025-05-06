@@ -9,15 +9,15 @@ loop foreach Token in Template
         Templates->Templates: add token at the end of the Sentence
     end
     opt isName
-        Templates ->Templates: add Name at the end of the Sentece
+        Templates ->Templates: add Name from n at the end of the Sentece
         Templates ->Templates: remove Name from n
     end
     opt isAdj
-        Templates ->Templates: add Adjective at the end of the Sentece
+        Templates ->Templates: add Adjective from a at the end of the Sentece
         Templates ->Templates: remove Adjective from a
     end
     opt isVerb
-        Templates ->Templates: add Verb at the end of the Sentece
+        Templates ->Templates: add Verb from v at the end of the Sentece
         Templates ->Templates: remove Verb from v
     end       
 end
