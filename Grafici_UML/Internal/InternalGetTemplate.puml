@@ -1,6 +1,7 @@
-@startuml InternalTemplate
+@startuml InternalGetTemplate
 
 Generator --> Templates: getTemplate()
+Templates ->Templates: choose Template from TemplateList
 Templates --> Generator: return Template
 
 
