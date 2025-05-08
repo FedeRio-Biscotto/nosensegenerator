@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+//piccola modifica per capire come usare gitHub
 public class Token {
     public Token(String s){
         token=s;
