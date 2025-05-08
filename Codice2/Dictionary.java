@@ -7,7 +7,7 @@ mi sceglie quale elemento prendere */
 public class Dictionary {
     public Dictionary(){    }
 
-    Name n=new Name("diocane");
+    Name n=new Name("diocane che mal di schiena");
     
     public Name getName(){
         System.out.println(n);
