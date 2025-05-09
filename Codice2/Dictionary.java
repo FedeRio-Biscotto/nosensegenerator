@@ -1,47 +1,75 @@
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.function.Function;
+import java.util.jar.Attributes.Name;
 
-/*qua ci vanno messe le liste dei names e poi un metodo random (chooseToken) 
-mi sceglie quale elemento prendere */
+/*intanto vi carico una prima versione del dizionario,
+ * bisogna commentare il codice per bene e
+ * cancellare alcuni metodi tipo test
+ */
 
-public class Dictionary {
-    public Dictionary(){
-        setLists();
-        Name n=new Name("diocane");
-        names.add(n);
+public class Dictionary  {
+    public Dictionary() throws IOException{
+        names=setList("Names.txt", Name::new);
+        verbs=setList("Verbs.txt", Verb::new);
+        adjs=setList("Adjs.txt", Adjective::new);
     }
  
-    /*setta le liste di nomi, aggettivi, verbi boh ci pensiamo dopo come fare */
-    private void setLists(){
-
-    }
 
     
     public Name getName(){
-        Name n=(Name) chooseToken(names);
-        return n;
+        return chooseToken(names);
     }
 
     public Verb getVerb(){
-        Verb v=(Verb) chooseToken(verbs);
-        return v;
+        return chooseToken(verbs);
     }
 
     public Adjective getAdj(){
-        Adjective a=(Adjective) chooseToken(adjs);
-        return a;
+        return chooseToken(adjs);
     }
 
-    private Token chooseToken(List<? extends Token> l){
+    private <T> T chooseToken(List<T> l){
         Random rand=new Random();
-        Token t=l.get(rand.nextInt(l.size()));
+        T t=l.get(rand.nextInt(l.size()));
         return t;
     }
 
-    private List<Name> names= new ArrayList<Name>();
-    private List<Verb> verbs= new ArrayList<Verb>();
-    private List<Adjective> adjs= new ArrayList<Adjective>();
+    //CARIAMO LE LISTE DIOCANEE
+    private static <T> List<T> setList(String fileName, Function<String, T> creator) throws IOException{
+        FileReader file=new FileReader(fileName);
+        Scanner sc=new Scanner(file);
+        List<T> result=new ArrayList<>();
+        while (sc.hasNextLine()) {
+            String line=sc.nextLine();
+            result.add(creator.apply(line));
+        }
+
+        sc.close();
+        return result;
+    }
+
+    private static <T> void printList(List<T> list){
+        for (T t : list) {
+            System.out.println(t);
+        }
+    }
+
+    public void test() throws IOException{
+               
+    }
+
+
+
+
+
+    private List<Name> names;
+    private List<Verb> verbs;
+    private List<Adjective> adjs;
 
 
 }
