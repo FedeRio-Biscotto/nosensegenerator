@@ -12,7 +12,7 @@ import java.util.jar.Attributes.Name;
  * cancellare alcuni metodi tipo test
  */
 
-public class Dictionary  {
+public class Dictionary {
     public Dictionary() throws IOException{
         names=setList("Names.txt", Name::new);
         verbs=setList("Verbs.txt", Verb::new);
@@ -53,7 +53,7 @@ public class Dictionary  {
         return result;
     }
 
-    private static <T> void printList(List<T> list){
+    public static <T> void printList(List<T> list){
         for (T t : list) {
             System.out.println(t);
         }
