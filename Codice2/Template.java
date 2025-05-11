@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes.Name;
 import java.util.regex.*;
 
 public class Template {
@@ -15,7 +16,7 @@ public class Template {
         adjNumber= CountTokens("\\(adj\\)", t);
     }
 
-    //Metodo privato che conta quanti nomi/aggettivi/verbi ci siano nel template
+    //Metodo privato che conta quanti nomi/aggettivi/verbi ci sono nel template
     private int CountTokens(String target, String sentence){
         int count = 0;
 
@@ -31,7 +32,7 @@ public class Template {
 
 
     //Metodo che riempie il template
-    public String FillTemplate(ArrayList<String> nouns, ArrayList<String> verbs, ArrayList<String> adjectives){
+    public String FillTemplate(List<Name> nouns, List<Verb> verbs, List<Adjective> adjectives){
         //Controllo che i nomi, verbi e aggettivi passati siano almeno quanti ne servono; altrimenti ritorno il template vuoto
         if(nouns.size() < namesNumber){
             System.err.println("[Error]: Insufficient nouns");
@@ -54,15 +55,15 @@ public class Template {
         
         //Sostituisce i nomi
         for (int i = 0; i < namesNumber; i++){
-            tem = tem.replaceFirst("\\(noun\\)", nouns.get(i));  
+            tem = tem.replaceFirst("\\(noun\\)", nouns.get(i).toString());  
         } 
         //Sostituisce i verbi
         for (int i = 0; i < verbsNumber; i++){
-            tem = tem.replaceFirst("\\(verb\\)", verbs.get(i));  
+            tem = tem.replaceFirst("\\(verb\\)", verbs.get(i).toString());  
         } 
         //Sostituisce gli aggettivi
         for (int i = 0; i < adjNumber; i++){
-            tem = tem.replaceFirst("\\(adj\\)", adjectives.get(i));  
+            tem = tem.replaceFirst("\\(adj\\)", adjectives.get(i).toString());  
         } 
 
         return tem;

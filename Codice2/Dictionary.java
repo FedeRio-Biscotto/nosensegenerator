@@ -1,7 +1,18 @@
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.function.Function;
+import java.util.jar.Attributes.Name;
+
+/*intanto vi carico una prima versione del dizionario,
+ * bisogna commentare il codice per bene e
+ * cancellare alcuni metodi tipo test
+ */
 import java.util.Random;
 import java.util.Scanner;
 import java.util.function.Function;

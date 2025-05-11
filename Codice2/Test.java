@@ -1,6 +1,9 @@
+import java.io.IOException;
+
 public class Test {
-    public static void main(String[] args) {
-        Dictionary a=new Dictionary();
-        System.out.println(a.getName());
+    public static void main(String[] args)  throws IOException{
+        Generator g= new Generator();
+        System.out.println(g.genSentence("diocane"));
+
     }
 }
