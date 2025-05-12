@@ -5,12 +5,14 @@ animal
 ant
 apple
 arch
+asshole
 avenue
 baby
 basket
 beach
 beetle
 ball
+bitch
 book
 boulevard
 box
@@ -109,6 +111,7 @@ mirror
 mole
 monkey
 moon
+motherfucker
 motor
 mountain
 napkin
