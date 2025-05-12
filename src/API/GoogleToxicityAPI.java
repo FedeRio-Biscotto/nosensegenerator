@@ -62,7 +62,7 @@ public class GoogleToxicityAPI {
             // Se una categoria e' "troppo sicura" di avere contenuto tossico, la consideriamo inaccettabile
             if (confidence >= 0.6) { //Soglia di tolleranza
                 //Spiega perche' e' tossica
-                System.out.println("Contenuto problematico rilevato: " + name + " (" + confidence + ")");
+                //System.out.println("[Debug]: Contenuto problematico rilevato: " + name + " (" + confidence + ")");
                 return false;
             } else{
                 //Debug: Print toxicity
