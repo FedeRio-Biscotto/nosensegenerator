@@ -83,7 +83,7 @@ public class Generator {
         try {
             if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut)){
                 sentenceOut = genSentence(sentenceIn, tense);
-                System.out.println("Tossica");
+                //System.out.println("Tossica");
             }
         }catch(Exception e){
         //Gestione dell'eccezione
