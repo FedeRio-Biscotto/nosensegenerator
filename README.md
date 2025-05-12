@@ -75,7 +75,40 @@ cd project-name
 
 ---
 
-## 6.
+## 6. Sample Output
+### What happened when the sentence is Toxic?
+```bash
+$ ./build.sh
+[System]: Welcome to NoSenseGenerator! :D
+[System]: Do you want to:
+ (1).Insert a sentence that we'll analyze and use tokens
+ (2).Generate a totally random sentence
+ Please insert 1 or 2
+2
+[System]: How many sentences do you want to create?
+4
+[System]: How many PAST tense sentences do you want to create?
+1
+[System]: How many PRESENT tense sentences do you want to create?
+2
+[System]: How many FUTURE tense sentences do you want to create?
+1
+
+[System]: Here you PAST sentences
+1: the slow goose tested without warning
+[System]: Here you PRESENT sentences
+1: the dog washes, while the unknown frog eats without warning
+[Debug]: Contenuto problematico rilevato: Religion & Belief (0.6356589)
+[Debug]: Contenuto problematico rilevato: Religion & Belief (0.8561644)
+[Debug]: Contenuto problematico rilevato: Religion & Belief (0.79605263)
+[Debug]: Contenuto problematico rilevato: Religion & Belief (0.6097561)
+2: the sour god dances the early goose
+[System]: Here you FUTURE sentences
+1: the smart animal fears the shy animal
+[System]: Thank you for using NoSenseGenerator, we hope to see you soon ^_^
+```
+The debug statement was commented out in the version provided to the user
+
 
 ---
 
