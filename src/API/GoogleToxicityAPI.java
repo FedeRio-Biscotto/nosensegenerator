@@ -1,105 +1,76 @@
-//Package
+// Package
 package api;
-//Import
+
+// Import
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import org.json.*;
-//Import dei nostri pacchetti
-import dictionary.*;
 
-//DEBUG
-//NON SERVE PIU' COMPILARE COSI': bisogna usare Git Bash e il file .sh, e' tutto scritto la' dentro, lo lascio solo come Debug
-//Compilare con: javac -cp ".;json-20250107.jar" GoogleToxicityAPI.java
-//Eseguire con: java -cp ".;json-20250107.jar" GoogleToxicityAPI.java
-
+// Classe
 public class GoogleToxicityAPI {
-    public static void main(String[] args) throws Exception {
-        // //Variabili
-        // ArrayList<MyNoun> nouns = new ArrayList<>();
-        // ArrayList<MyVerb> verbs = new ArrayList<>();
-        // ArrayList<MyAdjective> adj = new ArrayList<>();
 
-        // //API Key
-        // String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //Chiave Fede
-        
-        // //Endpoint dell'API
-        // String url = "https://language.googleapis.com/v1/documents:analyzeSyntax?key=" + apiKey;
-        
-        // //Testo JSON per la richiesta
-        // String requestBody = "{\n" +
-        //         "  \"document\": {\n" +
-        //         "    \"type\": \"PLAIN_TEXT\",\n" +
-        //         "    \"content\": \"I am a pretty sentence and Giulia loves eating dogs\"\n" +
-        //         "  }\n" +
-        //         "}";
-        
-        // //Crea un client HTTP
-        // HttpClient client = HttpClient.newHttpClient();
+    //Metodo per verificare se il contenuto e's accettabile
+    public static boolean isToxicityAcceptable(String sentence) throws Exception {
+        //API Key
+        String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //Chiave Fede
 
-        // //Crea una richiesta HTTP POST
-        // HttpRequest request = HttpRequest.newBuilder()
-        //         .uri(URI.create(url))
-        //         .header("Content-Type", "application/json")
-        //         .POST(HttpRequest.BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))
-        //         .build();
+        //Endpoint dell'API
+        String url = "https://language.googleapis.com/v1/documents:moderateText?key=" + apiKey;
 
-        // //Invia la richiesta
-        // HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        //Corpo JSON della richiesta
+        String requestBody = "{\n" +
+                "  \"document\": {\n" +
+                "    \"type\": \"PLAIN_TEXT\",\n" +
+                "    \"content\": \"" + sentence + "\"\n" +
+                "  }\n" +
+                "}";
 
-        // //Gestione degli errori
-        // if (response.statusCode() != 200) {
-        //     System.out.println("Error: " + response.statusCode());
-        //     System.out.println("Details: " + response.body());
-        // }
+        //Client HTTP
+        HttpClient client = HttpClient.newHttpClient();
 
-        // // //Stampa la risposta raw
-        // // System.out.println("Response Code: " + response.statusCode());
-        // // System.out.println("Response Body: " + response.body());
+        //Richiesta HTTP POST
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))
+                .build();
 
-        // //La risposta JSON dell'api la metto in una stringa
-        // String jsonResponse = response.body();
+        //Invio richiesta e ricezione risposta
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // //Parsing del JSON
-        // JSONObject jsonObject = new JSONObject(jsonResponse);
-        // JSONArray tokens = jsonObject.getJSONArray("tokens");
+        //Controllo errori
+        if (response.statusCode() != 200) {
+            System.out.println("Errore: " + response.statusCode());
+            System.out.println("Dettagli: " + response.body());
+            return false; // Default in caso di errore
+        }
 
-        // //Estrapola i tokens
-        // for (int i = 0; i < tokens.length(); i++) {
-        //     JSONObject token = tokens.getJSONObject(i);
-        //     String word = token.getJSONObject("text").getString("content");
-        //     String posTag = token.getJSONObject("partOfSpeech").getString("tag");
+        //Parsing della risposta JSON
+        String jsonResponse = response.body();
+        JSONObject jsonObject = new JSONObject(jsonResponse);
+        JSONArray categories = jsonObject.getJSONArray("moderationCategories");
 
-        //     //Salva le parole in array
-        //     switch (posTag) {
-        //     case "PRON":
-        //         nouns.add(word);
-        //         break;
-        //     case "NOUN":
-        //         nouns.add(word);
-        //         break;
-        //     case "VERB":
-        //         verbs.add(word);
-        //         break;
-        //     case "ADJ":
-        //         adj.add(word);
-        //         break;
-        //     }
-        // }
+        //Analizza le categorie
+        for (int i = 0; i < categories.length(); i++) {
+            JSONObject category = categories.getJSONObject(i);
+            String name = category.getString("name");
+            double confidence = category.getDouble("confidence");
 
+            // Se una categoria e' "troppo sicura" di avere contenuto tossico, la consideriamo inaccettabile
+            if (confidence >= 0.6) { //Soglia di tolleranza
+                //Spiega perche' e' tossica
+                System.out.println("Contenuto problematico rilevato: " + name + " (" + confidence + ")");
+                return false;
+            } else{
+                //Debug: Print toxicity
+                // System.out.println("Contenuto problematico NON rilevato: " + name + " (" + confidence + ")");
+            }
+        }
 
-        // //Debug: Stampo gli array  
-        // System.out.println("Nomi: " + nouns);
-        // System.out.println("MyVerbi: " + verbs);
-        // System.out.println("Aggettivi: " + adj);
-
-
+        //Nessuna categoria problematica rilevata
+        return true;
     }
-    
-
-    
 }
-
