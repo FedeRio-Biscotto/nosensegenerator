@@ -1,7 +1,7 @@
 # NoSenseGenerator
 A simple tool that generates random sentences. Ideal for testing, writing prompts, or language learning.
 
-DEBUG: SCARICATE QUESTO: https://git-scm.com/downloads/win
+DEBUG: se usate windows scaricate: https://git-scm.com/downloads/win
 
 ---
 
