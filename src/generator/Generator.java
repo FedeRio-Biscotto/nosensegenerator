@@ -80,6 +80,16 @@ public class Generator {
         
 //----------------------------------------------------- (3) CONTROLLA LA TOSSICITA' -----------------------------------------------------\\
 
+        try {
+            if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut)){
+                sentenceOut = genSentence(sentenceIn, tense);
+                System.out.println("Tossica");
+            }
+        }catch(Exception e){
+        //Gestione dell'eccezione
+        System.out.println("[Error]: " + e.getMessage());
+       }
+
 //----------------------------------------------------- (4) RISULTATO -----------------------------------------------------\\
 
         //Svuota le liste
@@ -110,5 +120,6 @@ public class Generator {
     private List<MyVerb> verbList_past=new ArrayList<>();
     private String sentenceOut="";
     private Template temp, template;
+
 
 }
