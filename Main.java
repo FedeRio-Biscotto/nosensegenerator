@@ -10,16 +10,22 @@ import template.*;
 public class Main {
     public static void main(String[] args) {
         //Variabili
+
+        //sentence immessa dall'utente
         String s = ""; //es. The quick brown fox jumps over the lazy dog, while he went home
+        //sentence generata dal nostro programma
         String result = "";
-        //int tense = 2; //0 = passato, 1 = presente, 2 = futuro
         Generator g = new Generator();
-        Scanner scanner = new Scanner(System.in); //oggetto Scanner per leggere l'input da terminale
+        //oggetto Scanner per leggere l'input da terminale
+        Scanner scanner = new Scanner(System.in);
 
         //Variabili di controllo per cosa inserisce l'utente
         boolean check = false;
         int mode = 0;
-        int sentenceNumber = 0, sentenceCount = 0;
+        //numero di frasi da comporre
+        int sentenceNumber = 0;
+        //
+        int sentenceCount = 0;
         int past = 0, present = 0, future = 0;
         int temp = 0;
         
@@ -70,40 +76,40 @@ public class Main {
         while(!check){
             System.out.printf("[System]: How many PAST tense sentences do you want to create? [0-%d]\n", sentenceNumber);
             past = scanner.nextInt();
-            temp = sentenceCount + past;
+            //past=Integer.parseInt(scanner.next());
+            
             scanner.nextLine(); //Consuma il carattere \n
 
-            if(temp > sentenceNumber){
+            if(past > sentenceNumber){
                 System.out.println("[System]: Uh oh, you've run out of sentences, enter a smaller number");
-                temp = sentenceCount;
             } else if (past < 0){
                 System.out.println("[System]: Seriously you entered a NEGATIVE number?? -_-");
-                temp = sentenceCount;
             } else {
-                sentenceCount = temp;
+                sentenceCount = past;
                 check = true;
             }
         }
 
         //Resetto le variabili di controllo
-        check = false;
+        if(sentenceCount<sentenceNumber){
+            check = false;
+        } else {
+            System.out.println("[System]: You will create 0 presente sentences");
+        }
 
         //check presente
 
         while(!check){
-            System.out.printf("[System]: How many PRESENT tense sentences do you want to create? [0-%d]\n", sentenceNumber-past);
+            System.out.printf("[System]: How many PRESENT tense sentences do you want to create? [0-%d]\n", sentenceNumber-sentenceCount);
             present = scanner.nextInt();
-            temp = sentenceCount + present;
             scanner.nextLine(); //Consuma il carattere \n
 
-            if(temp > sentenceNumber){
+            if(sentenceCount + present > sentenceNumber){
                 System.out.println("[System]: Uh oh, you've run out of sentences, enter a smaller number");
-                temp = sentenceCount;
             } else if (present < 0){
                 System.out.println("[System]: Seriously you entered a NEGATIVE number?? -_-");
-                temp = sentenceCount;
             } else {
-                sentenceCount = temp;
+                sentenceCount += present;
                 check = true;
             }
         }
@@ -111,28 +117,8 @@ public class Main {
         future=sentenceNumber - past - present;
         System.out.printf("[System]You will create %d future sentences", future);
 
-        /* //Resetto le variabili di controllo
-        check = false;
-
-        while(!check){
-            System.out.println("[System]: How many FUTURE tense sentences do you want to create?");
-            future = scanner.nextInt();
-            temp = sentenceCount + future;
-            scanner.nextLine(); //Consuma il carattere \n
-
-            if(temp > sentenceNumber){
-                System.out.println("[System]: Uh oh, you've run out of sentences, enter a smaller number");
-                temp = sentenceCount;
-            } else if (future < 0){
-                System.out.println("[System]: Seriously you entered a NEGATIVE number?? -_-");
-                temp = sentenceCount;
-            } else {
-                sentenceCount = temp;
-                check = true;
-            }
-        } */
-        
-        
+        scanner.close();
+       
 
         try {
             // Codice che potrebbe lanciare un'eccezione
