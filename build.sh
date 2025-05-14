@@ -22,3 +22,6 @@ if [ $? -eq 0 ]; then
 else
   echo "Errore nella compilazione."
 fi
+
+
+read -p "Premi INVIO per chiudere..."

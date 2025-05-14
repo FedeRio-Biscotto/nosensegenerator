@@ -64,8 +64,11 @@ public class Main {
         check = false;
 
         //STEP 3: L'utente decide quante frasi al passato, presente, futuro creare
+
+
+        //check PAST
         while(!check){
-            System.out.println("[System]: How many PAST tense sentences do you want to create?");
+            System.out.printf("[System]: How many PAST tense sentences do you want to create? [0-%d]\n", sentenceNumber);
             past = scanner.nextInt();
             temp = sentenceCount + past;
             scanner.nextLine(); //Consuma il carattere \n
@@ -85,8 +88,10 @@ public class Main {
         //Resetto le variabili di controllo
         check = false;
 
+        //check presente
+
         while(!check){
-            System.out.println("[System]: How many PRESENT tense sentences do you want to create?");
+            System.out.printf("[System]: How many PRESENT tense sentences do you want to create? [0-%d]\n", sentenceNumber-past);
             present = scanner.nextInt();
             temp = sentenceCount + present;
             scanner.nextLine(); //Consuma il carattere \n
@@ -103,7 +108,10 @@ public class Main {
             }
         }
 
-        //Resetto le variabili di controllo
+        future=sentenceNumber - past - present;
+        System.out.printf("[System]You will create %d future sentences", future);
+
+        /* //Resetto le variabili di controllo
         check = false;
 
         while(!check){
@@ -122,7 +130,7 @@ public class Main {
                 sentenceCount = temp;
                 check = true;
             }
-        }
+        } */
         
         
 
@@ -159,6 +167,7 @@ public class Main {
             }
 
             System.out.println("[System]: Thank you for using NoSenseGenerator, we hope to see you soon ^_^");
+            
 
 
             // System.out.println("Frase iniziale: " + s);
