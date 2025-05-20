@@ -11,12 +11,6 @@ import org.json.*;
 //Import dei nostri pacchetti
 import dictionary.*;
 
-
-//DEBUG
-//NON SERVE PIU' COMPILARE COSI': bisogna usare Git Bash e il file .sh, e' tutto scritto la' dentro, lo lascio solo come Debug
-//Compilare con: javac -cp ".;json-20250107.jar" GoogleLanguageAPI.java
-//Eseguire con: java -cp ".;json-20250107.jar" GoogleLanguageAPI.java
-
 public class GoogleLanguageAPI {
         //Variabili 
         private static ArrayList<MyNoun> nouns = new ArrayList<>();
@@ -60,7 +54,7 @@ public class GoogleLanguageAPI {
             System.out.println("Details: " + response.body());
         }
 
-        // //Stampa la risposta raw
+        // //[DEBUG] Stampa la risposta raw
         // System.out.println("Response Code: " + response.statusCode());
         // System.out.println("Response Body: " + response.body());
 
@@ -104,7 +98,7 @@ public class GoogleLanguageAPI {
         }
 
 
-        // //Debug: Stampo gli array  
+        // //[DEBUG]: Stampo gli array  
         // System.out.println("Nomi: " + nouns);
         // System.out.println("Verbi 3a persona: " + verbs_thirdperson);
         // System.out.println("Verbi generali: " + verbs);
