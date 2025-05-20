@@ -25,8 +25,8 @@ public class Dictionary  {
     }
  
     //metodo usato nel costruttore
-    private static <T> List<T> setList(String fileMyNoun, Function<String, T> creator) throws IOException{
-        FileReader file=new FileReader(fileMyNoun);
+    private static <T> List<T> setList(String fileName, Function<String, T> creator) throws IOException{
+        FileReader file=new FileReader(fileName);
         Scanner sc=new Scanner(file);
         List<T> result=new ArrayList<>();
         while (sc.hasNextLine()) {

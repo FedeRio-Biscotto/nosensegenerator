@@ -39,6 +39,11 @@ public class Generator {
         verbList.addAll(GoogleLanguageAPI.getVerbs_thirdperson());
         verbList_past.addAll(GoogleLanguageAPI.getVerbs_past());
 
+        System.out.println("DEBUG: ECCO LA LISTA NOUNLIST SUBITO DOPO L'INPUT");
+        stampaLista(nounList);
+
+        
+
 
 //----------------------------------------------------- (2) COSTRUISCI LA FRASE RANDOM -----------------------------------------------------\\
 
@@ -52,11 +57,9 @@ public class Generator {
 
         //riempi le liste
         fillList(nounList, template.getMissingNouns(), dict::getNoun);
-
         fillList(verbList, template.getMissingVerbs(), dict::getVerb);
         fillList(verbList_nothirdperson, template.getMissingVerbs(), dict::getVerb_nothirdperson);
-        fillList(verbList_past, template.getMissingVerbs(), dict::getVerb_past);
-        
+        fillList(verbList_past, template.getMissingVerbs(), dict::getVerb_past);        
         fillList(adjList, template.getMissingAdjectives(), dict::getAdj);
 
         Collections.shuffle(nounList);
@@ -80,20 +83,24 @@ public class Generator {
         
 //----------------------------------------------------- (3) CONTROLLA LA TOSSICITA' -----------------------------------------------------\\
 
-        try {
+        /* try {
             if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut)){
                 sentenceOut = genSentence(sentenceIn, tense);
                 //System.out.println("Tossica");
             }
         }catch(Exception e){
         //Gestione dell'eccezione
-        System.out.println("[Error]: " + e.getMessage());
-       }
+        System.out.println("[Error]: frase tossica" + e.getMessage());
+       } */
 
 //----------------------------------------------------- (4) RISULTATO -----------------------------------------------------\\
 
         //Svuota le liste
         nounList.clear();
+        System.out.println("______________________________");
+        System.out.println("lista a fine generator");
+        stampaLista(nounList);
+        System.out.println("______________________________");
         adjList.clear();
         verbList.clear();
         verbList_nothirdperson.clear();
@@ -110,6 +117,12 @@ public class Generator {
     }
 
 
+
+    public static <T> void stampaLista(List<T> lista) {
+        for (T elemento : lista) {
+            System.out.println(elemento);
+        }
+        }
 
 
     //Varibabili
