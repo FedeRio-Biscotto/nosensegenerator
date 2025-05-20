@@ -15,7 +15,7 @@ public class GoogleToxicityAPI {
     //Metodo per verificare se il contenuto e's accettabile
     public static boolean isToxicityAcceptable(String sentence) throws Exception {
         //API Key
-        String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //Chiave Fede
+        String apiKey = //"ChiaveAPI da inserire"; 
 
         //Endpoint dell'API
         String url = "https://language.googleapis.com/v1/documents:moderateText?key=" + apiKey;
