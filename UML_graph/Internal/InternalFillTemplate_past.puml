@@ -1,8 +1,8 @@
-@startuml InternalFillTemplate
+@startuml InternalFillTemplate_
 
 
 activate Generator
-Generator -> Templates: FillTemplate(List<MyNoun> nouns, List<MyVerb> verbs, List<MyVerb> verbs_nothirdperson, List<MyAdjective> adjectives)
+Generator -> Templates: FillTemplate_past(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives)
 activate Templates
 
 Templates->Templates: Check if number of tokens is correct
@@ -13,11 +13,7 @@ loop foreach (noun) in Template
 end
 
 loop foreach (verb) in Template
-    alt nothirdperson == true
-    Templates ->Templates: Replace (verb) with verbs_nothirdperson.get(i).toString()
-    else nothirdperson == false
     Templates ->Templates: Replace (verb) with verbs.get(i).toString()
-    end
 end   
 
 loop foreach (adj) in Template
