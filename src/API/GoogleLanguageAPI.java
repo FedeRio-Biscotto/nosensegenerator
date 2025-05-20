@@ -27,7 +27,7 @@ public class GoogleLanguageAPI {
 
     public static void LanguageApi(String sentence) throws Exception {
         //API Key
-        String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //Chiave Fede
+        String apiKey = //"ChiaveAPI da inserire"
         
         //Endpoint dell'API
         String url = "https://language.googleapis.com/v1/documents:analyzeSyntax?key=" + apiKey;
