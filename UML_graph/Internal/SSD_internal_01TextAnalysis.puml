@@ -1,5 +1,4 @@
 @startuml System_Sequence_Diagrams_internal_TextAnalysis
-!include Graphic.puml
 
 'Dichiarazione degli attori e partecipanti
 actor User

@@ -1,0 +1,21 @@
+@startuml
+
+participant Generator
+participant Analyzer
+
+Generator -> Analyzer : analyzeSentence(sentenceIn)
+Analyzer -> GoogleLanguageAPI : LanguageApi(sentenceIn)
+GoogleLanguageAPI --> Analyzer : API Response
+Analyzer -> Analyzer : getNouns()
+Analyzer -> Analyzer : getAdj()
+Analyzer -> Analyzer : getVerbs()
+Analyzer -> Analyzer : getVerbs_thirdperson()
+Analyzer -> Analyzer : getVerbs_past()
+Analyzer --> Generator : updateTokenLists()
+
+
+
+
+
+
+@enduml
