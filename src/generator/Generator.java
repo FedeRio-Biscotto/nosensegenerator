@@ -24,7 +24,7 @@ public class Generator {
     /**
      * analizza la sentenceIn e aggiorna le liste con i token
      * che verranno usati per ogni frase
-     * @param sentenceIn la frase immessa da utente
+     * @param sentenceIn la frase da cui vengono estratti i token
      * 
      */
     private void analyzeSentence(String sentenceIn) {
@@ -59,6 +59,7 @@ public class Generator {
         List<MyVerb> verbTemp_past = new ArrayList<>();
         List<MyAdjective> adjTemp = new ArrayList<>();
         String sentenceOut = "";
+        Template template = TemplatesLibrary.RandomTemplatePicker();
         // ----------------------------------------------------- (1) COLLEGAMENTO API E ANALISI FRASE -----------------------------------------------------\\
 
         //analizzo la frase con API solo alla prima richiesta di generare una sentence
@@ -68,12 +69,6 @@ public class Generator {
         }
 
         // ----------------------------------------------------- (2) COSTRUISCI LA FRASE RANDOM -----------------------------------------------------\\
-
-    
-
-
-        temp = TemplatesLibrary.RandomTemplatePicker();
-        template = temp; // creo una copia del template su cui lavorare, nel caso la toxicity non sia accettabile, ritorno alla copia originale
 
         //aggiorno le liste temporanee con i token immessi dall'utente
         nounTemp.addAll(nounList);
@@ -110,18 +105,16 @@ public class Generator {
             sentenceOut = template.FillTemplate(nounTemp, verbTemp, verbTemp_nothirdperson, adjTemp);
         }
 
-        // ----------------------------------------------------- (3) CONTROLLA LA
-        // TOSSICITA' -----------------------------------------------------\\
+        // ----------------------------------------------------- (3) CONTROLLA LA TOSSICITA' -----------------------------------------------------\\
 
-        // try {
-        // if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut)){
-        // sentenceOut = genSentence(sentenceIn, tense);
-        // //System.out.println("Tossica");
-        // }
-        // }catch(Exception e){
-        // //Gestione dell'eccezione
-        // System.out.println("[Error]: frase tossica" + e.getMessage());
-        // }
+        try {
+        if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut)){
+            return "Toxic sentence";
+        }
+        }catch(Exception e){
+        //Gestione di eventuali eccezioni dell'API
+        return "[Error]: " + e.getMessage();
+        }
 
         // ----------------------------------------------------- (4) RISULTATO
         // -----------------------------------------------------\\
@@ -130,8 +123,9 @@ public class Generator {
         return sentenceOut;
     }
 
+
     /**
-     * filla la lista di token T con i targetSize token che mi servono
+     * riempie la lista di token T con i targetSize token che mi servono
      * @param <T> un token generico
      * @param list una lista di token
      * @param targetSize numero di token che mi mancano alla lista
@@ -163,8 +157,6 @@ public class Generator {
     private List<MyVerb> verbList_nothirdperson = new ArrayList<>();
     private List<MyVerb> verbList_past = new ArrayList<>();
     
-
-    private Template temp, template;
     // true <=> è la prima sentence che il generator produce
     private boolean firstSentence;
 
