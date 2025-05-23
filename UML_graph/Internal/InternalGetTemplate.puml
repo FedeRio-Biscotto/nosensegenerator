@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @startuml InternalGetTemplate
 
 Generator --> Templates: getTemplate()
@@ -6,3 +7,13 @@ Templates --> Generator: return Template
 
 
 @enduml
+=======
+@startuml InternalGetTemplate
+
+Generator --> Templates: getTemplate()
+Templates ->Templates: choose Template from TemplateList
+Templates --> Generator: return Template
+
+
+@enduml
+>>>>>>> 9087e1f (eccoci qua)
