@@ -1,13 +1,30 @@
 package NoSenGen;
+import java.awt.*;
+import java.net.URI;
 import java.util.*;
+
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import NoSenGen.generator.Generator;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class Main {
 
 static Generator g =new Generator();
+
+    @Bean
+    public ApplicationRunner applicationRunner() {
+        return args -> {
+            try {
+                Desktop.getDesktop().browse(new URI("http://localhost:8080"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+    }
+
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
