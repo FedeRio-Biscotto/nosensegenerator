@@ -11,18 +11,27 @@ import java.util.ArrayList;
 //import org.json.*;
 //Import dei nostri pacchetti
 import NoSenGen.myDictionary.*;
+import ch.qos.logback.core.net.SyslogOutputStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class GoogleLanguageAPI {
-        //Variabili 
-        private static ArrayList<MyNoun> nouns = new ArrayList<>();
-        private static ArrayList<MyVerb> verbs = new ArrayList<>();
-        private static ArrayList<MyVerb> verbs_thirdperson = new ArrayList<>();
-        private static ArrayList<MyVerb> verbs_past = new ArrayList<>();
-        private static ArrayList<MyAdjective> adj = new ArrayList<>();
+    //Variabili
+    private static ArrayList<MyNoun> nouns = new ArrayList<>();
+    private static ArrayList<MyVerb> verbs = new ArrayList<>();
+    private static ArrayList<MyVerb> verbs_thirdperson = new ArrayList<>();
+    private static ArrayList<MyVerb> verbs_past = new ArrayList<>();
+    private static ArrayList<MyAdjective> adj = new ArrayList<>();
+    private static String response_public;
 
     public static void LanguageApi(String sentence) throws Exception {
+        // Reinizializza le liste prima di ogni nuova analisi
+        nouns.clear();
+        verbs.clear();
+        verbs_thirdperson.clear();
+        verbs_past.clear();
+        adj.clear();
+        
         //API Key
         String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //Chiave Fede
         
@@ -57,12 +66,13 @@ public class GoogleLanguageAPI {
             System.out.println("Details: " + response.body());
         }
 
-        // //Stampa la risposta raw
+        // //[DEBUG] Stampa la risposta raw
         // System.out.println("Response Code: " + response.statusCode());
         // System.out.println("Response Body: " + response.body());
 
         //La risposta JSON dell'api la metto in una stringa
         String jsonResponse = response.body();
+        response_public = jsonResponse; //Copia per il metodo Semantic Tree
 
         //Parsing del JSON
         JSONObject jsonObject = new JSONObject(jsonResponse);
@@ -100,17 +110,25 @@ public class GoogleLanguageAPI {
             }
         }
 
-
-        // //Debug: Stampo gli array  
-        // System.out.println("Nomi: " + nouns);
-        // System.out.println("Verbi 3a persona: " + verbs_thirdperson);
-        // System.out.println("Verbi generali: " + verbs);
-        // System.out.println("Verbi al passto: " + verbs_past);
-        // System.out.println("Aggettivi: " + adj);
-
-
     }
-    
+
+    public static void Semantic_Tree() {
+        System.out.println("----Semantic Tree----");
+
+        //Parsing del JSON
+        JSONObject jsonObject = new JSONObject(response_public);
+        JSONArray tokens = jsonObject.getJSONArray("tokens");
+
+        //Estrapola e stampa i tokens
+        for (int i = 0; i < tokens.length(); i++) {
+            JSONObject token = tokens.getJSONObject(i);
+            String word = token.getJSONObject("text").getString("content");
+            String posTag = token.getJSONObject("partOfSpeech").getString("tag");
+
+            System.out.println(word + " | " + posTag);
+        }
+    }
+
     //metodi get
     public static ArrayList<MyNoun> getNouns() {
         return nouns;
@@ -120,7 +138,7 @@ public class GoogleLanguageAPI {
         return verbs;
     }
 
-        public static ArrayList<MyVerb> getVerbs_thirdperson() {
+    public static ArrayList<MyVerb> getVerbs_thirdperson() {
         return verbs_thirdperson;
     }
 
@@ -133,4 +151,3 @@ public class GoogleLanguageAPI {
     }
     
 }
-
