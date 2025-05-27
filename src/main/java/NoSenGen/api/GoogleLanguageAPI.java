@@ -14,13 +14,6 @@ import NoSenGen.myDictionary.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
-
-//DEBUG
-//NON SERVE PIU' COMPILARE COSI': bisogna usare Git Bash e il file .sh, e' tutto scritto la' dentro, lo lascio solo come Debug
-//Compilare con: javac -cp ".;json-20250107.jar" GoogleLanguageAPI.java
-//Eseguire con: java -cp ".;json-20250107.jar" GoogleLanguageAPI.java
-
 public class GoogleLanguageAPI {
         //Variabili 
         private static ArrayList<MyNoun> nouns = new ArrayList<>();
