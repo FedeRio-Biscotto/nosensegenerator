@@ -9,7 +9,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import org.json.*;
 
-// Classe
+//Classe
 public class GoogleToxicityAPI {
 
     //Metodo per verificare se il contenuto e's accettabile
