@@ -1,0 +1,20 @@
+@startuml InternalCountMissingWords
+
+
+participant Generator
+participant Template
+
+Generator -> Template : getMissingNouns()
+Template -> Template : countTokens("noun", sentence)
+Template --> Generator : return n : int  
+
+Generator -> Template : getMissingAdjectives()
+Template -> Template : countTokens("adj", sentence)
+Template --> Generator : n : int
+
+Generator -> Template : getMissingVerbs()
+Template -> Template : countTokens("verb", sentence)
+Template --> Generator : n : int
+
+
+@enduml

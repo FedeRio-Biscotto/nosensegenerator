@@ -15,7 +15,7 @@ public class GoogleToxicityAPI {
     //Metodo per verificare se il contenuto e's accettabile
     public static boolean isToxicityAcceptable(String sentence) throws Exception {
         //API Key
-        String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //Chiave Fede
+        String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; // "CHIAVE API DA INSERIRE"; 
 
         //Endpoint dell'API
         String url = "https://language.googleapis.com/v1/documents:moderateText?key=" + apiKey;
@@ -59,13 +59,13 @@ public class GoogleToxicityAPI {
             String name = category.getString("name");
             double confidence = category.getDouble("confidence");
 
-            // Se una categoria e' "troppo sicura" di avere contenuto tossico, la consideriamo inaccettabile
+            //Se una categoria e' "troppo sicura" di avere contenuto tossico, la consideriamo inaccettabile
             if (confidence >= 0.6) { //Soglia di tolleranza
-                //Spiega perche' e' tossica
+                //[DEBUG]: Print toxicity
                 //System.out.println("[Debug]: Contenuto problematico rilevato: " + name + " (" + confidence + ")");
                 return false;
             } else{
-                //Debug: Print toxicity
+                //[DEBUG]: Print toxicity
                 // System.out.println("Contenuto problematico NON rilevato: " + name + " (" + confidence + ")");
             }
         }

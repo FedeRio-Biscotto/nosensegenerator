@@ -5,7 +5,8 @@ actor User
 
 participant Generator
 participant Dictionary
-participant Templates
+participant TemplatesLibrary
+participant Template
 participant Analyzer
 participant Moderator
 
@@ -21,25 +22,26 @@ Generator -> Dictionary: Save new words
 activate Dictionary
 Dictionary --> Generator: Return
 deactivate Dictionary
-Generator --> User: Return "done"
-deactivate Generator
 
 'Seconda parte del grafico
 == Building a no sense random sentence==
-User -> Generator: Ask to create sentence
-activate Generator
-Generator -> Templates: Request Template
-activate Templates
-Templates --> Generator: Return Template
-deactivate Templates
-Generator -> Generator: Count missing tokens
+Generator -> TemplatesLibrary: Request Template
+activate TemplatesLibrary
+TemplatesLibrary --> Generator: Return Template
+deactivate TemplatesLibrary
 
-loop end when you have all the tokens
-    Generator -> Dictionary: Request token
-    activate Dictionary
-    Dictionary --> Generator: Return token
-    deactivate Dictionary
+loop end when you have filled every type of token list
+Generator -> Template: fillTokenList(Token t)
+activate Template
+Template -> Dictionary: getToken
+activate Dictionary
+Dictionary -> Template: return Token t
+deactivate Dictionary
+deactivate Template
 end
+
+Generator -> Generator: shuffle every token list
+
 Generator --> Templates : fill the template
 activate Templates
 Templates --> Generator: return Sentence

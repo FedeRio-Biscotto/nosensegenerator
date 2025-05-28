@@ -1,6 +1,6 @@
 @startuml InternalGetTemplate
-!include Graphic.puml
-Generator --> Templates: getTemplate()
+
+Generator -> Templates: getTemplate()
 Templates ->Templates: choose Template from TemplateList
 Templates --> Generator: return Template
 

@@ -33,7 +33,7 @@ public class GoogleLanguageAPI {
         adj.clear();
         
         //API Key
-        String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //Chiave Fede
+        String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //"CHIAVE API DA INSERIRE"; 
         
         //Endpoint dell'API
         String url = "https://language.googleapis.com/v1/documents:analyzeSyntax?key=" + apiKey;
@@ -66,6 +66,7 @@ public class GoogleLanguageAPI {
             System.out.println("Details: " + response.body());
         }
 
+        // //[DEBUG] Stampa la risposta raw
         // //[DEBUG] Stampa la risposta raw
         // System.out.println("Response Code: " + response.statusCode());
         // System.out.println("Response Body: " + response.body());

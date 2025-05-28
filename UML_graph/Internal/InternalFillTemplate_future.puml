@@ -1,0 +1,28 @@
+@startuml InternalFillTemplate_
+
+
+activate Generator
+Generator -> Templates: FillTemplate_past(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives)
+activate Templates
+
+Templates->Templates: Check if number of tokens is correct
+Templates->Templates: Check if we need to use third or no-third person
+
+loop foreach (noun) in Template
+    Templates ->Templates: Replace (noun) with nouns.get(i).toString()
+end
+
+loop foreach (verb) in Template
+    Templates ->Templates: Replace (verb) with "will" + verbs.get(i).toString()
+end   
+
+loop foreach (adj) in Template
+    Templates ->Templates: Replace (adj) with adj.get(i).toString()
+end   
+
+Templates --> Generator: return Sentence 
+deactivate Templates
+
+deactivate Generator
+
+@enduml
