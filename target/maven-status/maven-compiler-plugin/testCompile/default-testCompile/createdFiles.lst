@@ -1,7 +1,0 @@
-NoSenGen\generator\GeneratorTest.class
-NoSenGen\myDictionary\MyDictionaryTest.class
-NoSenGen\api\GoogleToxicityAPITest.class
-NoSenGen\api\GoogleLanguageAPITest.class
-NoSenGen\template\TemplatesLibraryTest.class
-NoSenGen\controller\GeneratorControllerTest.class
-NoSenGen\template\TemplateTest.class
