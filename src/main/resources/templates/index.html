@@ -4,11 +4,11 @@
     <title>NoSenseGenerator</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Comic Sans MS", sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: #dff1f5;
         }
         .form-group {
             margin-bottom: 15px;
@@ -51,6 +51,13 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        .semanticTreeGroup {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
         .error {
             color: red;
             padding: 10px;
@@ -68,13 +75,13 @@
 <body>
     <h1>Welcome to NoSenseGenerator! :D</h1>
 
-    <form id="generatorForm" onsubmit="generateSentences(event)">
+    <form id="generatorForm">
         <div class="form-group">
             <label>Mode:</label>
             <select name="mode" id="mode" required onchange="toggleInputSentence()">
-                <option value="1">Insert a sentence to analyze</option>
-                <option value="2">Generate random sentence</option>
-                <option value="3">Get the semantic tree</option>
+                <option value="1">Insert a sentence to analyze and Generate random sentences</option>
+                <option value="2">Generate totally random sentences</option>
+                <option value="3">Get the Semantic Tree</option>
             </select>
         </div>
 
@@ -103,7 +110,8 @@
             <input type="number" name="futureSentences" id="futureSentences" min="0" required onchange="validateTotalCount()">
         </div>
 
-        <button type="submit">Generate Sentences</button>
+        <button type="submit" id="generateButton" onclick="generateSentences(event)">Generate Sentences</button>
+        <button type="submit" id="semanticTreeButton" onclick="semanticTree(event)" style="display: none;">Semantic Tree</button>
     </form>
 
     <div id="loading" class="loading">
@@ -122,17 +130,35 @@
             const pastGroup = document.getElementById('pastSentencesGroup');
             const presentGroup = document.getElementById('presentSentencesGroup');
             const futureGroup = document.getElementById('futureSentencesGroup');
+            const generateButton = document.getElementById('generateButton');
+            const semanticTree = document.getElementById('semanticTreeButton');
 
             if (mode === '1') {
                 inputsentenceGroup.style.display = 'block';
-            } else if (mode === '3') {
+                sentenceGroup.style.display = 'block';
+                pastGroup.style.display = 'block';
+                presentGroup.style.display = 'block';
+                futureGroup.style.display = 'block';
+                generateButton.style.display = 'block';
+                semanticTree.style.display = 'none';
+
+            } else if (mode === '2') { // Mode 2
+                inputsentenceGroup.style.display = 'none';
+                sentenceGroup.style.display = 'block';
+                pastGroup.style.display = 'block';
+                presentGroup.style.display = 'block';
+                futureGroup.style.display = 'block';
+                generateButton.style.display = 'block';
+                semanticTree.style.display = 'none';
+            } else {
+                inputsentenceGroup.style.display = 'block';
                 sentenceGroup.style.display = 'none';
                 pastGroup.style.display = 'none';
                 presentGroup.style.display = 'none';
                 futureGroup.style.display = 'none';
+                generateButton.style.display = 'none';
+                semanticTree.style.display = 'block';
 
-            } else { // Mode 2
-                sentenceGroup.style.display = 'none';
             }
 
         }
@@ -146,7 +172,7 @@
             }
         }
 
-        //Controlla che il totale delle frasi non superi il totale
+        //Controlla che il num delle frasi non superi il totale
         function validateTotalCount() {
             const total = parseInt(document.getElementById('totalSentences').value) || 0;
             const past = parseInt(document.getElementById('pastSentences').value) || 0;
@@ -159,6 +185,54 @@
             }
         }
 
+
+        async function semanticTree(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('generatorForm');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const results = document.getElementById('results');
+            const semanticTree = document.getElementById('semanticTreeButton');
+
+            //Resetta lo stato del form
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            results.innerHTML = '';
+
+            try {
+                const response = await fetch('/Tree', {
+                    method: 'POST',
+                    body: new FormData(form)
+                });
+
+                console.log(typeof semanticTree);
+
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || `[Error]: HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (!data) {
+                    throw new Error('[Error]: No data received from server');
+                }
+
+                results.innerHTML = `
+                    <div class="semanticTreeGroup">
+                    <h2>Semantic Tree:</h2>
+                    <p>${data.semanticTree}</p>
+                </div>
+                `;
+            } catch (err) {
+                error.textContent = '[Error]:  ' + (err.message || 'Unknown error occurred');
+                error.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
         //Genera le frasi
         async function generateSentences(event) {
             event.preventDefault();
@@ -168,6 +242,7 @@
             const error = document.getElementById('error');
             const results = document.getElementById('results');
 
+            //Resetta lo stato del form
             loading.style.display = 'block';
             error.style.display = 'none';
             results.innerHTML = '';
@@ -180,12 +255,12 @@
 
                 if (!response.ok) {
                     const errorText = await response.text();
-                    throw new Error(errorText || `HTTP error! status: ${response.status}`);
+                    throw new Error(errorText || `[Error]: HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
                 if (!data) {
-                    throw new Error('No data received from server');
+                    throw new Error('[Error]: No data received from server');
                 }
 
                 results.innerHTML = `
@@ -194,13 +269,14 @@
                     ${renderSentenceGroup('Future Tense Sentences', data.futureSentences)}
                 `;
             } catch (err) {
-                error.textContent = 'Error: ' + (err.message || 'Unknown error occurred');
+                error.textContent = '[Error]:  ' + (err.message || 'Unknown error occurred');
                 error.style.display = 'block';
             } finally {
                 loading.style.display = 'none';
             }
         }
 
+        //Formatta il blocco di frasi
         function renderSentenceGroup(title, sentences) {
             if (!sentences || sentences.length === 0) return '';
 

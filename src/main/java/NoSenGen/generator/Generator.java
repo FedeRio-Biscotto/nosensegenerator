@@ -107,9 +107,18 @@ public class Generator {
 
         // ----------------------------------------------------- (3) CONTROLLA LA TOSSICITA' -----------------------------------------------------\\
 
+
         try {
         if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut)){
-            return "Toxic sentence";
+            //Pulisco le liste dei token
+            nounList.clear();
+            verbList.clear();
+            adjList.clear();
+            verbList_nothirdperson.clear();
+            verbList_past.clear();
+
+            //La frase è troppo tossica, riprovo con un'altra frase
+            sentenceOut = "Toxic Phrase | New Phrase: " + genSentence("", tense);
         }
         }catch(Exception e){
         //Gestione di eventuali eccezioni dell'API
