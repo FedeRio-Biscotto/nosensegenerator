@@ -10,13 +10,13 @@ import java.util.regex.*;
 import NoSenGen.myDictionary.*;
 
 public class Template {
-    //Variabili
+    //--------------------------------VARIABILI--------------------------------//
     private String template;
     private int nounsNumber,verbsNumber, adjNumber, sentenceNumber;
     private boolean nothirdperson = false;
     private List<String> nothirdpersontoken = Arrays.asList("I", "you", "we", "they");
 
-    //Costruttore
+    //--------------------------------COSTRUTTORE--------------------------------//
     public Template(String t){
         template=t;
 
@@ -32,6 +32,7 @@ public class Template {
         adjNumber= CountTokens("\\(adj\\)", template);
     }
 
+//--------------------------------METODI PRIVATE--------------------------------//
     //Metodo privato che conta quanti nomi/aggettivi/verbi/sentence ci sono nel template
     private int CountTokens(String target, String sentence){
         int count = 0;
@@ -46,7 +47,7 @@ public class Template {
         return count;
     }
 
-
+//--------------------------------METODI PUBLIC--------------------------------//
     //Metodo che riempie il template
     public String FillTemplate(List<MyNoun> nouns, List<MyVerb> verbs, List<MyVerb> verbs_nothirdperson, List<MyAdjective> adjectives){
         //Controllo che i nomi, verbi e aggettivi passati siano almeno quanti ne servono; altrimenti ritorno il template vuoto
@@ -66,7 +67,7 @@ public class Template {
         //Creo una copia di template su cui lavorare
         String tem = template;
 
-        //Riempie il template: dove trova (noun) mette un nome, (verb) un verbo, (adj) un aggettivo, (sentence) chiama ricorsivamente il metodo
+        //Riempie il template: dove trova (noun) mette un nome, (verb) un verbo, (adj) un aggettivo
         //Esempio di template: (noun) (verb) a (adj) (noun)
         
         //controlla se c'e' (noun) "and" (noun) e controlla se il primo nome della lista non sia in terza persona
@@ -93,10 +94,12 @@ public class Template {
             tem = tem.replaceFirst("\\(adj\\)", adjectives.get(i).toString());  
         } 
 
+        //Ritorna il template pieno
         return tem;
     }
 
     //Metodo FillTemplate_past (non ha il controllo della terza persona)
+    //Riempe il template con verbi al passato
     public String FillTemplate_past(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives){
         //Controllo che i nomi, verbi e aggettivi passati siano almeno quanti ne servono; altrimenti ritorno il template vuoto
         if(nouns.size() < nounsNumber){
@@ -131,10 +134,12 @@ public class Template {
             tem = tem.replaceFirst("\\(adj\\)", adjectives.get(i).toString());  
         } 
 
+        //Ritorna il template pieno
         return tem;
     }
 
     //Metodo FillTemplate_future (non ha il controllo della terza persona)
+    //Riempe il template con verbi al futuro
     public String FillTemplate_future(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives){
         String s = "";
 
@@ -172,11 +177,12 @@ public class Template {
             tem = tem.replaceFirst("\\(adj\\)", adjectives.get(i).toString());  
         } 
 
+        //Ritorna il template pieno
         return tem;
     }
 
 
-    //Metodi get
+//--------------------------------METODI GET--------------------------------//
     public String getTemplate(){
         return template;
     }
@@ -195,7 +201,8 @@ public class Template {
         return adjNumber;
     }
 
-    //metodo cointain
+
+//--------------------------------METODI PRIVATE--------------------------------//
     private boolean containsExactPhrase(String text, String phrase) {
         return text.contains(phrase);
     }

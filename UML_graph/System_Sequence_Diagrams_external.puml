@@ -1,58 +1,61 @@
 @startuml System_Sequence_Diagrams_external
 !include Graphic.puml
-
-'Dichiarazione degli attori e partecipanti
 actor User
-
-participant "No sense generator (main)" as Main
+participant "Generator" as Main
+participant "Analyzer" as ApiGoogle
 participant Dictionary
-participant Template
-participant "API Google" as ApiGoogle
-participant "API Toxicity" as ApiToxicity
+participant "Templates Library" as Template
+participant "Toxicity Checker" as ApiToxicity
 
-'Prima parte del grafico
-== Text analysis and new token insertion into dictionaries ==
-User -> Main: Enter sentence
+== Text Analysis Phase ==
+User -> Main: analyzeSentence(text)
 activate Main
-Main -> ApiGoogle: Ask to analyze
+
+Main -> ApiGoogle: analyze(text)
 activate ApiGoogle
-ApiGoogle --> Main: Return components
+ApiGoogle --> Main: return List<Token>
 deactivate ApiGoogle
-Main -> Dictionary: Save new words
+
+Main -> Dictionary: saveNewTokens(tokens)
 activate Dictionary
-Dictionary --> Main: Return
+Dictionary --> Main: confirmSave
 deactivate Dictionary
-Main --> User: Return "done"
+
+Main --> User: return "Analysis Complete"
 deactivate Main
 
-'Seconda parte del grafico
-== Ask to create a no sense random sentence==
-User -> Main: Ask to create sentence
+== Sentence Generation Phase ==
+User -> Main: generateSentence()
 activate Main
-Main -> Template: Request template
-activate Template 
-Template --> Main: Return template
-deactivate Template
-Main -> Main: Count missing words
 
-loop end when sentence is returned
-    Main -> Dictionary: Request tokens
+Main -> Template: getRandomTemplate()
+activate Template
+Template --> Main: return template
+deactivate Template
+
+Main -> Main: calculateRequiredTokens()
+
+loop until valid sentence generated
+    Main -> Dictionary: getTokens(requirements)
     activate Dictionary
-    Dictionary --> Main: Return tokens
+    Dictionary --> Main: return tokens
     deactivate Dictionary
-    Main -> Main: Build the sentence
-    Main -> ApiToxicity: Ask to analyze toxicity
+
+    Main -> Main: buildSentence(template, tokens)
+
+    Main -> ApiToxicity: checkToxicity(sentence)
     activate ApiToxicity
 
-    alt check toxicity
-        ApiToxicity --> Main: [Return unacceptable toxicity]
-    else
-        ApiToxicity --> Main: [Return acceptable toxicity]
+    alt is toxic
+        ApiToxicity --> Main: UNACCEPTABLE
+        note right: Continue loop with\nnew tokens
+    else is not toxic
+        ApiToxicity --> Main: ACCEPTABLE
         deactivate ApiToxicity
-        Main --> User: Return the sentence 
+        Main --> User: return generatedSentence
         deactivate Main
-    end 
+        break
+    end
 end
-
 
 @enduml

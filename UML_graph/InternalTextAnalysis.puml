@@ -1,63 +1,60 @@
 @startuml System_Sequence_Diagrams_internal_TextAnalysis
 !include Graphic.puml
-
-'Dichiarazione degli attori e partecipanti
 actor User
-
-participant "Input Sentence" as S1
-'participant "Output Sentence" as S2
-participant "No sense generator (main)" as Main
+participant "Sentence" as S1
+participant "Generator" as Main
+participant "Analyzer" as ApiGoogle
 participant Dictionary
-participant Template
-participant "API Google" as ApiGoogle
-participant "API Toxicity" as ApiToxicity
 
-'Prima parte del grafico
-== Text analysis and new token insertion into dictionaries ==
-User -> S1**: [Terminal: Enter sentence]
+== Input and Analysis ==
+User -> S1 **: create(inputText)
 activate S1
-S1 -> Main: input
+S1 -> Main: analyze(inputText)
 activate Main
-Main -> ApiGoogle: analyze(input_sentence)
+
+Main -> ApiGoogle: analyzeSentence(inputText)
 activate ApiGoogle
-ApiGoogle --> Main: Return tokens
+ApiGoogle --> Main: return List<Token>
 deactivate ApiGoogle
 
-loop foreach noun
-    Main -> Dictionary: CheckIfNounExist(noun[i])
+== Dictionary Update ==
+loop for each token in nouns
+    Main -> Dictionary: existsNoun(token)
     activate Dictionary
-    Dictionary --> Main: Return true/false
-    alt false
-        Main -> Dictionary: SaveNoun(noun[i])
-        Dictionary --> Main: Return
+    alt token not found
+        Dictionary --> Main: return false
+        Main -> Dictionary: saveNoun(token)
+        Dictionary --> Main: confirmSave
+    else token exists
+        Dictionary --> Main: return true
     end
-end 
+end
 
-loop foreach adjective
-    Main -> Dictionary: CheckIfAdjectiveExist(adjective[i])
-    Dictionary --> Main: Return true/false
-    alt false
-        Main -> Dictionary: SaveAdjective(adjective[i])
-        Dictionary --> Main: Return
+loop for each token in adjectives
+    Main -> Dictionary: existsAdjective(token)
+    alt token not found
+        Dictionary --> Main: return false
+        Main -> Dictionary: saveAdjective(token)
+        Dictionary --> Main: confirmSave
+    else token exists
+        Dictionary --> Main: return true
     end
-end 
+end
 
-loop foreach verb
-    Main -> Dictionary: CheckIfVerbExist(verb[i])
-    Dictionary --> Main: Return true/false
-    alt false
-        Main -> Dictionary: SaveVerb(verb[i])
-        Dictionary --> Main: Return
+loop for each token in verbs
+    Main -> Dictionary: existsVerb(token)
+    alt token not found
+        Dictionary --> Main: return false
+        Main -> Dictionary: saveVerb(token)
+        Dictionary --> Main: confirmSave
+    else token exists
+        Dictionary --> Main: return true
     end
     deactivate Dictionary
-end 
+end
 
-Main --> User: Return "done"
+Main --> User: return "Analysis complete"
 deactivate Main
 deactivate S1
-
-
-
-
 
 @enduml

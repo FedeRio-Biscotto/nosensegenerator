@@ -8,24 +8,14 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <groupId>nsg</groupId>
     <artifactId>NSG</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <properties>
-        <java.version>21</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <sonar.host.url>http://localhost:9000</sonar.host.url>
-        <sonar.login>squ_fe8ae7064e5719c1603319fa1649669d7b8c9387</sonar.login>
-        <sonar.projectKey>NSG</sonar.projectKey>
-    </properties>
-
     <dependencies>
-        <!-- Spring Boot Web (per applicazioni web) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -47,9 +37,22 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20250107</version>
-            <!-- Corretta la versione al rilascio più recente stabile -->
         </dependency>
-    </dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+</dependencies>
 
     <build>
         <resources>
@@ -63,7 +66,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>NoSenGen.Main</mainClass> <!-- Aggiorna questo con il percorso corretto della tua classe Main -->
+                    <mainClass>NoSenGen.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
