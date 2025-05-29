@@ -18,12 +18,18 @@ static Generator g =new Generator();
     public ApplicationRunner applicationRunner() {
         return args -> {
             try {
-                Desktop.getDesktop().browse(new URI("http://localhost:8080"));
+                // Check if Desktop is supported
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                    Desktop.getDesktop().browse(new URI("http://localhost:8080"));
+                } else {
+                    System.out.println("Application started! Please open http://localhost:8080 in your web browser");
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("Application started! Please open http://localhost:8080 in your web browser");
             }
         };
     }
+
 
 
     public static void main(String[] args) {

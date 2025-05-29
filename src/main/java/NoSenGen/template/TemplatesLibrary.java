@@ -10,15 +10,6 @@ public class TemplatesLibrary{
     //Variabili
     static ArrayList<Template> templates = new ArrayList<>();
 
-    // //Debug: main
-    // public static void main(String[] args) {
-    //     //Debug: Stampo i template ricevuti
-    //     for(int i = 0; i< templates.size(); i++){
-    //         System.out.println(i + ": " + templates.get(i).getTemplate().toString());
-    //     }
-
-    // }
-
     static {
         templates = TemplateAdder("src/main/resources/templates.txt");
 
@@ -63,11 +54,6 @@ public class TemplatesLibrary{
         //Variabili
         int result = 0;
         int max = 10;
-
-        //Controllo che la size sia maggiore di 10
-        // if (templates.size() < max){
-        //     max = templates.size();
-        // }
 
         //Creo un numero randoom
         SecureRandom rand = new SecureRandom();

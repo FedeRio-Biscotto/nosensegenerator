@@ -14,8 +14,6 @@ import NoSenGen.api.*;
 import NoSenGen.template.*;
 import org.springframework.stereotype.Service;
 
-
-
 @Component
 public class Generator {
     public Generator() {
@@ -54,7 +52,7 @@ public class Generator {
     */
     public String genSentence(String sentenceIn, int tense) throws IOException {
         // Variabili del metodo
-        Dictionary dict = new Dictionary();
+        MyDictionary dict = new MyDictionary();
         List<MyNoun> nounTemp=new ArrayList<>();
         List<MyVerb> verbTemp=new ArrayList<>();
         List<MyVerb> verbTemp_nothirdperson = new ArrayList<>();

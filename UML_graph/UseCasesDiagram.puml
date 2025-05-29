@@ -1,36 +1,49 @@
-@startuml
+@startuml Nonsense_Sentence_Generator
 
-''ci mettiamo anche il template??''
+' Actors
+actor "User" as User
+actor "Language Analysis API" as AnLingAPI
+actor "Toxicity API" as ToxicAPI
 
-actor User
-rectangle "NoSenseGenerator" {
-    actor Generator
-    actor Analyser
-    actor Moderator
-    actor Dictionary
-    actor Templates
-    User --> (Sentence in)
-    Generator <--(Sentence in)
-    Generator <-- (ottieni la frase analizzata)
-    Analyser --> (ottieni la frase analizzata)
-    Generator --> (scegli il template)
-    Templates --> (scegli il template)
-    Generator --> (riempi il template)
-    Dictionary --> (riempi il template)
-    Templates --> (riempi il template)
-    Generator --> (calcola quanti token mancano)
-    Generator --> (controlla toxicity)
-    Moderator <-- (controlla toxicity)
-    Generator --> (sentence out)
-    User<--(sentence out)
-    Moderator --> (risultato toxicity)
-    User <-- (risultato toxicity)
+rectangle "Nonsense Sentence Generator" {
+    ' Primary use cases
+    usecase "Input Sentence" as Input
+    usecase "Select Verb Tense" as VerbTense
+    usecase "Analyze Sentence" as Analysis
+    usecase "Generate Nonsense Sentence" as Generate
+    usecase "Check Toxicity" as Verify
+    usecase "Display Result" as Show
+
+    ' Extensions
+    usecase "Save New Words\nto Dictionary" as SaveWords
+    usecase "Load Template" as LoadTemplate
 }
 
+' User interactions
+User --> Input
+User --> VerbTense
+User --> Show
 
+' Main flow
+Input ..> Analysis : <<include>>
+VerbTense ..> Analysis : <<include>>
+Analysis --> AnLingAPI : analyze text
+AnLingAPI --> Analysis : return tokens
+Analysis ..> SaveWords : <<extend>>
+Analysis ..> Generate : <<include>>
 
+' Generation flow
+Generate ..> LoadTemplate : <<include>>
+Generate ..> Verify : <<include>>
 
+' Verification flow
+Verify --> ToxicAPI : check content
+ToxicAPI --> Verify : return rating
+Verify ..> Show : <<include>>
 
-
+' Notes
+note right of Analysis : Breaks sentence into\ntokens (nouns, verbs,\nadjectives)
+note right of Generate : Uses templates and\nrandom word selection
+note right of Verify : Ensures generated content\nis appropriate
 
 @enduml

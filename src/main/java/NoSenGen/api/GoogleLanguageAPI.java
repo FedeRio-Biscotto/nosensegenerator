@@ -7,11 +7,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-
-//import org.json.*;
 //Import dei nostri pacchetti
 import NoSenGen.myDictionary.*;
-import ch.qos.logback.core.net.SyslogOutputStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

@@ -1,64 +1,64 @@
 @startuml System_Sequence_Diagrams_external
 
-'Dichiarazione degli attori e partecipanti
 actor User
 
 participant Generator
 participant Dictionary
-participant TemplatesLibrary
+participant "Templates Library" as TemplatesLibrary
 participant Template
 participant Analyzer
 participant Moderator
 
-'Prima parte del grafico
-== Text analysis and new token insertion into dictionaries ==
+== Text Analysis and Dictionary Update ==
 User -> Generator: Enter sentence
 activate Generator
-Generator -> Analyzer: Ask to analyze
+
+Generator -> Analyzer: analyzeSentence(text)
 activate Analyzer
-Analyzer --> Generator: Return tokens
+Analyzer --> Generator: return List<Token>
 deactivate Analyzer
-Generator -> Dictionary: Save new words
+
+Generator -> Dictionary: saveNewTokens(tokens)
 activate Dictionary
-Dictionary --> Generator: Return
+Dictionary --> Generator: confirmSave
 deactivate Dictionary
 
-'Seconda parte del grafico
-== Building a no sense random sentence==
-Generator -> TemplatesLibrary: Request Template
+== Random Sentence Generation ==
+Generator -> TemplatesLibrary: getRandomTemplate()
 activate TemplatesLibrary
-TemplatesLibrary --> Generator: Return Template
+TemplatesLibrary --> Generator: return Template
 deactivate TemplatesLibrary
 
-loop end when you have filled every type of token list
-Generator -> Template: fillTokenList(Token t)
-activate Template
-Template -> Dictionary: getToken
-activate Dictionary
-Dictionary -> Template: return Token t
-deactivate Dictionary
-deactivate Template
+loop for each required token type
+    Generator -> Template: getRequiredTokens()
+    activate Template
+    Template -> Dictionary: getToken(type)
+    activate Dictionary
+    Dictionary --> Template: return Token
+    deactivate Dictionary
+    Template --> Generator: return TokenList
+    deactivate Template
 end
 
-Generator -> Generator: shuffle every token list
+Generator -> Generator: shuffleTokenLists()
 
-Generator --> Templates : fill the template
-activate Templates
-Templates --> Generator: return Sentence
-deactivate Templates
+Generator -> TemplatesLibrary: fillTemplate(template, tokens)
+activate TemplatesLibrary
+TemplatesLibrary --> Generator: return Sentence
+deactivate TemplatesLibrary
 
-== Checking Toxicity ==
-Generator -> Moderator: Ask to analyze toxicity
+== Toxicity Validation ==
+Generator -> Moderator: checkToxicity(sentence)
 activate Moderator
-alt check toxicity
-    Moderator --> Generator: [Return unacceptable toxicity]
-    Generator --> User: [Return unacceptable toxicity]
-else
-    Moderator --> Generator: [Return acceptable toxicity]
-    deactivate Moderator
-    Generator --> User: Return the sentence
-    deactivate Generator
-end
 
+alt is toxic
+    Moderator --> Generator: return UNACCEPTABLE
+    Generator --> User: Display "Content not appropriate"
+else is not toxic
+    Moderator --> Generator: return ACCEPTABLE
+    deactivate Moderator
+    Generator --> User: Display generated sentence
+end
+deactivate Generator
 
 @enduml
