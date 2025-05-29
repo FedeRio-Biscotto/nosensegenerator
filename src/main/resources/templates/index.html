@@ -158,10 +158,14 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    const errorText = await response.text();
+                    throw new Error(errorText || `HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
+                if (!data) {
+                    throw new Error('No data received from server');
+                }
                 
                 results.innerHTML = `
                     ${renderSentenceGroup('Past Tense Sentences', data.pastSentences)}
@@ -169,7 +173,7 @@
                     ${renderSentenceGroup('Future Tense Sentences', data.futureSentences)}
                 `;
             } catch (err) {
-                error.textContent = 'Error: ' + err.message;
+                error.textContent = 'Error: ' + (err.message || 'Unknown error occurred');
                 error.style.display = 'block';
             } finally {
                 loading.style.display = 'none';
@@ -188,7 +192,6 @@
                 </div>
             `;
         }
-
         // Inizializza lo stato del form
         toggleInputSentence();
     </script>
