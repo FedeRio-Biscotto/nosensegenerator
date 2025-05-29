@@ -2,8 +2,6 @@
 # NoSenseGenerator
 A simple tool that generates random sentences. Ideal for testing, writing prompts, or language learning.
 
-**DEBUG:** se usate Windows scaricate: [Git for Windows](https://git-scm.com/downloads/win)
-
 ---
 
 ## Table of Contents
@@ -124,7 +122,6 @@ Using these APIs may incur costs depending on usage volume.
 
 ## 6. Known Issues and Limitations
 
-- No GUI interface (CLI only)
 - Limited vocabulary size (subject to JSON word lists)
 - Token analysis and sensitive content detection is rudimentary
 - Tests will not compile unless JUnit 5 is correctly included in the classpath
@@ -150,5 +147,5 @@ See `LICENSE` file for full details.
 
 ## 9. Acknowledgments
 
-- Thanks to [FedeRio-Biscotto](https://github.com/FedeRio-Biscotto),
+- Thanks to [Federica Bernardinello](https://github.com/FedeRio-Biscotto), [Mattia Zenere](https://github.com/melodjin), [Matteo Pauletto](https://github.com/Pauletot), [Tommaso Maretto](https://github.com/Tommy160804)
 
