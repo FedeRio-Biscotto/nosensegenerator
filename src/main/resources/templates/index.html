@@ -67,13 +67,14 @@
 </head>
 <body>
     <h1>Welcome to NoSenseGenerator! :D</h1>
-    
+
     <form id="generatorForm" onsubmit="generateSentences(event)">
         <div class="form-group">
             <label>Mode:</label>
             <select name="mode" id="mode" required onchange="toggleInputSentence()">
                 <option value="1">Insert a sentence to analyze</option>
                 <option value="2">Generate random sentence</option>
+                <option value="3">Get the semantic tree</option>
             </select>
         </div>
 
@@ -82,22 +83,22 @@
             <input type="text" name="inputSentence" id="inputSentence">
         </div>
 
-        <div class="form-group">
-            <label>Total Sentences (max 5):</label>
-            <input type="number" name="totalSentences" id="totalSentences" min="1" max="5" required onchange="updateRemainingCount()">
+        <div class="form-group" id="totalSentencesGroup">
+            <label>Total Sentences (max 20):</label>
+            <input type="number" name="totalSentences" id="totalSentences" min="1" max="20" required onchange="updateRemainingCount()">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="pastSentencesGroup">
             <label>Past Tense Sentences:</label>
             <input type="number" name="pastSentences" id="pastSentences" min="0" required onchange="validateTotalCount()">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="presentSentencesGroup">
             <label>Present Tense Sentences:</label>
             <input type="number" name="presentSentences" id="presentSentences" min="0" required onchange="validateTotalCount()">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="futureSentencesGroup">
             <label>Future Tense Sentences:</label>
             <input type="number" name="futureSentences" id="futureSentences" min="0" required onchange="validateTotalCount()">
         </div>
@@ -106,47 +107,67 @@
     </form>
 
     <div id="loading" class="loading">
-        Generating sentences... Please wait...
+        We are generating your sentences... Please wait... -_-
     </div>
 
     <div id="error" class="error" style="display: none;"></div>
     <div id="results"></div>
 
     <script>
+        //Toglie il blocco input sentence se viene selezionato il mode 2
         function toggleInputSentence() {
             const mode = document.getElementById('mode').value;
-            const inputGroup = document.getElementById('inputSentenceGroup');
-            inputGroup.style.display = mode === '1' ? 'block' : 'none';
+            const inputsentenceGroup = document.getElementById('inputSentenceGroup');
+            const sentenceGroup = document.getElementById('totalSentencesGroup');
+            const pastGroup = document.getElementById('pastSentencesGroup');
+            const presentGroup = document.getElementById('presentSentencesGroup');
+            const futureGroup = document.getElementById('futureSentencesGroup');
+
+            if (mode === '1') {
+                inputsentenceGroup.style.display = 'block';
+            } else if (mode === '3') {
+                sentenceGroup.style.display = 'none';
+                pastGroup.style.display = 'none';
+                presentGroup.style.display = 'none';
+                futureGroup.style.display = 'none';
+
+            } else { // Mode 2
+                sentenceGroup.style.display = 'none';
+            }
+
         }
 
+        //Aggiorna il valore del campo total sentences se viene modificato il valore di past, present e future
         function updateRemainingCount() {
             const total = parseInt(document.getElementById('totalSentences').value) || 0;
-            if (total > 5) {
-                alert('Maximum 5 sentences allowed');
-                document.getElementById('totalSentences').value = 5;
+            if (total > 20) {
+                alert('Maximum 20 sentences allowed');
+                document.getElementById('totalSentences').value = 20;
             }
         }
 
+        //Controlla che il totale delle frasi non superi il totale
         function validateTotalCount() {
             const total = parseInt(document.getElementById('totalSentences').value) || 0;
             const past = parseInt(document.getElementById('pastSentences').value) || 0;
             const present = parseInt(document.getElementById('presentSentences').value) || 0;
             const future = parseInt(document.getElementById('futureSentences').value) || 0;
-            
+
             const sum = past + present + future;
             if (sum > total) {
                 alert(`Total of tense-specific sentences (${sum}) cannot exceed total sentences (${total})`);
             }
         }
 
+        //Genera le frasi
         async function generateSentences(event) {
             event.preventDefault();
-            
+
             const form = document.getElementById('generatorForm');
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
             const results = document.getElementById('results');
-            
+
             loading.style.display = 'block';
             error.style.display = 'none';
             results.innerHTML = '';
@@ -166,7 +187,7 @@
                 if (!data) {
                     throw new Error('No data received from server');
                 }
-                
+
                 results.innerHTML = `
                     ${renderSentenceGroup('Past Tense Sentences', data.pastSentences)}
                     ${renderSentenceGroup('Present Tense Sentences', data.presentSentences)}
@@ -182,7 +203,7 @@
 
         function renderSentenceGroup(title, sentences) {
             if (!sentences || sentences.length === 0) return '';
-            
+
             return `
                 <div class="sentence-group">
                     <h2>${title}</h2>

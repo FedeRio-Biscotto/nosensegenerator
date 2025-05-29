@@ -22,10 +22,10 @@ static Generator g =new Generator();
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     Desktop.getDesktop().browse(new URI("http://localhost:8080"));
                 } else {
-                    System.out.println("Application started! Please open http://localhost:8080 in your web browser");
+                    System.out.println("[System]: Welcome to NoSenseGenerator! :D \n [System]: Please open http://localhost:8080 in your web browser");
                 }
             } catch (Exception e) {
-                System.out.println("Application started! Please open http://localhost:8080 in your web browser");
+                System.out.println("[System]: Welcome to NoSenseGenerator! :D \n [System]: Please open http://localhost:8080 in your web browser");
             }
         };
     }
