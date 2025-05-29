@@ -23,6 +23,7 @@ public class GeneratorController {
         this.generator = generator;
     }
 
+
     @GetMapping("/")
     public String showHomePage(Model model) {
         // Aggiungiamo alcuni attributi per gestire i limiti

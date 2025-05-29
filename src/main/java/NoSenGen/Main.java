@@ -14,6 +14,7 @@ public class Main {
 
 static Generator g =new Generator();
 
+
     @Bean
     public ApplicationRunner applicationRunner() {
         return args -> {

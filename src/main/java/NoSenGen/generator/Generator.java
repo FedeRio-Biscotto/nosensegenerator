@@ -107,6 +107,7 @@ public class Generator {
 
         // ----------------------------------------------------- (3) CONTROLLA LA TOSSICITA' -----------------------------------------------------\\
 
+
         try {
         if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut)){
             //Pulisco le liste dei token
