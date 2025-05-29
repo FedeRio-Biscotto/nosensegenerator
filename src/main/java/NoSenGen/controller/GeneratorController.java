@@ -1,12 +1,18 @@
+//Package
 package NoSenGen.controller;
 
+//Import
 import NoSenGen.generator.Generator;
+import NoSenGen.api.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class GeneratorController {
@@ -20,7 +26,7 @@ public class GeneratorController {
     @GetMapping("/")
     public String showHomePage(Model model) {
         // Aggiungiamo alcuni attributi per gestire i limiti
-        model.addAttribute("maxSentences", 5);
+        model.addAttribute("maxSentences", 20);
         return "index";
     }
 
@@ -36,11 +42,11 @@ public class GeneratorController {
     ) {
         try {
             // Validazione
-            if (totalSentences > 5) {
-                throw new IllegalArgumentException("Maximum 5 sentences allowed");
+            if (totalSentences > 20) {
+                throw new IllegalArgumentException("[Error]: Maximum 20 sentences allowed");
             }
             if (pastSentences + presentSentences + futureSentences != totalSentences) {
-                throw new IllegalArgumentException("Sum of tense-specific sentences must equal total sentences");
+                throw new IllegalArgumentException("[Error]: Sum of tense-specific sentences must equal total sentences");
             }
 
             GeneratorResponse response = new GeneratorResponse();
@@ -61,7 +67,31 @@ public class GeneratorController {
 
             return response;
         } catch (Exception e) {
-            throw new RuntimeException("Error generating sentences: " + e.getMessage(), e);
+            throw new RuntimeException("[Error]: generating sentences: " + e.getMessage(), e);
+        }
+    }
+
+    @PostMapping("/Tree")
+    @ResponseBody  // Questo ci permette di restituire JSON invece di una lista
+    public ResponseEntity<Map<String, String>> semanticTree(
+            @RequestParam String inputSentence
+    ) {
+        try {
+            // Chiama il metodo Semantic_Tree della tua classe GoogleLanguageAPI
+            String semanticTree = GoogleLanguageAPI.Semantic_Tree(inputSentence);
+
+            // Sostituisci i '\n' con '<br>' per il rendering HTML
+            String semanticTreeWithBr = semanticTree.replace("\n", "<br>");
+
+            // Crea una mappa con i dati in formato JSON
+            Map<String, String> response = new HashMap<>();
+            response.put("semanticTree", semanticTreeWithBr);
+
+            // Restituisci una risposta HTTP con un oggetto JSON
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            throw new RuntimeException("[Error]: generating sentences: " + e.getMessage(), e);
         }
     }
 
