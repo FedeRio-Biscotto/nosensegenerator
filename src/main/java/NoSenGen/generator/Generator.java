@@ -27,9 +27,9 @@ public class Generator {
      * @param sentenceIn la frase da cui vengono estratti i token
      * 
      */
-    private void analyzeSentence(String sentenceIn) {
+    private void analyzeSentence(String sentenceIn, String apiKey) {
         try {
-            GoogleLanguageAPI.LanguageApi(sentenceIn);
+            GoogleLanguageAPI.LanguageApi(sentenceIn, apiKey);
         } catch (Exception e) {
             // Gestione dell'eccezione
             System.out.println("[Error]: " + e.getMessage());
@@ -50,7 +50,7 @@ public class Generator {
      * @return la frase nosense generata
      * @throws IOException
     */
-    public String genSentence(String sentenceIn, int tense) throws IOException {
+    public String genSentence(String sentenceIn, int tense, String apiKey) throws IOException {
         // Variabili del metodo
         MyDictionary dict = new MyDictionary();
         List<MyNoun> nounTemp=new ArrayList<>();
@@ -64,7 +64,7 @@ public class Generator {
 
         //analizzo la frase con API solo alla prima richiesta di generare una sentence
         if(firstSentence){
-            analyzeSentence(sentenceIn);
+            analyzeSentence(sentenceIn, apiKey);
             firstSentence=false;
         }
 
@@ -109,7 +109,7 @@ public class Generator {
 
 
         try {
-        if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut)){
+        if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut, apiKey)){
             //Pulisco le liste dei token
             nounList.clear();
             verbList.clear();
@@ -118,7 +118,7 @@ public class Generator {
             verbList_past.clear();
 
             //La frase è troppo tossica, riprovo con un'altra frase
-            sentenceOut = "Toxic Phrase | New Phrase: " + genSentence("", tense);
+            sentenceOut = "Toxic Phrase | New Phrase: " + genSentence("", tense, apiKey);
         }
         }catch(Exception e){
         //Gestione di eventuali eccezioni dell'API
