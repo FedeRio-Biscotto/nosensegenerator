@@ -1,35 +1,42 @@
-
 @startuml
+
 !include Graphic.puml
 
-left to right direction
-actor User
-
-rectangle NoSenGen {
-    (Generate NoSense Sentences) as GenSentences
-    (Analyze Syntax with Google API) as SyntaxAnalysis
-    (Check Toxicity with Google API) as ToxicityCheck
-    (Get Semantic Tree) as SemanticTree
+class Token {
+    - token: String
 }
 
-rectangle "Google Cloud APIs" {
-    (Analyze Syntax) as SyntaxAPI
-    (Moderate Text) as ModerateAPI
+class MyNoun
+class MyVerb
+class MyAdjective
+
+class MyDictionary
+
+class Template {
+    - template: String
 }
 
-' Relazioni principali utente-sistema
-User -- GenSentences
-User -- SemanticTree
+class TemplatesLibrary
 
-' Include: generazione frasi richiede analisi sintattica e controllo tossicità
-GenSentences ..> (Analyze Syntax with Google API) : <<include>>
-GenSentences ..> (Check Toxicity with Google API) : <<include>>
+class Generator
 
-' SemanticTree si basa sull'analisi sintattica
-SemanticTree ..> (Analyze Syntax with Google API) : <<include>>
+MyNoun -|> Token
+MyVerb -|> Token
+MyAdjective -|> Token
 
-' API esterne
-SyntaxAnalysis --> SyntaxAPI
-ToxicityCheck --> ModerateAPI
+MyDictionary "1" *-- "*" MyNoun
+MyDictionary "1" *-- "*" MyVerb
+MyDictionary "1" *-- "*" MyAdjective
+
+
+Template "1" -- "*" MyNoun
+Template "1" -- "*" MyVerb
+Template "1" -- "*" MyAdjective
+
+TemplatesLibrary "1" -- "*" Template
+
+Generator "1" -- "1" MyDictionary
+Generator "1" -- "1" TemplatesLibrary
+Generator "1" -- "1" Template
 
 @enduml
