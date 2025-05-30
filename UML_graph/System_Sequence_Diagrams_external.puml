@@ -1,61 +1,48 @@
-@startuml System_Sequence_Diagrams_external
-!include Graphic.puml
+@startuml
+
+!include Graphic.puml 
+
 actor User
-participant "Generator" as Main
-participant "Analyzer" as ApiGoogle
-participant Dictionary
-participant "Templates Library" as Template
-participant "Toxicity Checker" as ApiToxicity
+participant "Frontend (Browser)" as FE
+participant "GeneratorController" as Controller
+participant "Generator" as Generator
+participant "TemplatesLibrary" as TemplatesLibrary
+participant "MyDictionary" as Dictionary
+participant "Template" as Template
+participant "Moderator" as Moderator
 
-== Text Analysis Phase ==
-User -> Main: analyzeSentence(text)
-activate Main
+== Generazione richiesta ==
 
-Main -> ApiGoogle: analyze(text)
-activate ApiGoogle
-ApiGoogle --> Main: return List<Token>
-deactivate ApiGoogle
+User -> FE : Inserisce frase e seleziona parametri
+FE -> Controller : POST /generate(inputSentence, tense, mode...)
+Controller -> Generator : genSentence(sentence, tense)
 
-Main -> Dictionary: saveNewTokens(tokens)
-activate Dictionary
-Dictionary --> Main: confirmSave
-deactivate Dictionary
+== Caricamento template ==
 
-Main --> User: return "Analysis Complete"
-deactivate Main
+Generator -> TemplatesLibrary : RandomTemplatePicker()
+TemplatesLibrary --> Generator : Template
 
-== Sentence Generation Phase ==
-User -> Main: generateSentence()
-activate Main
+== Preparazione token e riempimento template ==
 
-Main -> Template: getRandomTemplate()
-activate Template
-Template --> Main: return template
-deactivate Template
-
-Main -> Main: calculateRequiredTokens()
-
-loop until valid sentence generated
-    Main -> Dictionary: getTokens(requirements)
-    activate Dictionary
-    Dictionary --> Main: return tokens
-    deactivate Dictionary
-
-    Main -> Main: buildSentence(template, tokens)
-
-    Main -> ApiToxicity: checkToxicity(sentence)
-    activate ApiToxicity
-
-    alt is toxic
-        ApiToxicity --> Main: UNACCEPTABLE
-        note right: Continue loop with\nnew tokens
-    else is not toxic
-        ApiToxicity --> Main: ACCEPTABLE
-        deactivate ApiToxicity
-        Main --> User: return generatedSentence
-        deactivate Main
-        break
-    end
+loop per ogni tipo token richiesto
+    Generator -> Dictionary : getNoun() / getVerb() / getVerb_nothirdperson() / getAdj()
+    Dictionary --> Generator : Token
 end
+
+Generator -> Template : FillTemplate(...) (o FillTemplate_past / future)
+Template --> Generator : frase generata
+
+== Controllo tossicità ==
+
+Generator -> Moderator : checkToxicity(frase)
+Moderator --> Generator : true / false
+
+alt tossicità eccessiva
+    Generator -> Generator : rigenera frase
+end
+
+Generator --> Controller : frase generata (o messaggio errore)
+Controller --> FE : JSON con risultato
+FE --> User : Visualizza frase
 
 @enduml
