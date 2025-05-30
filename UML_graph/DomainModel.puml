@@ -1,67 +1,35 @@
-@startuml Domain_Model
 
-class Generator {
-    +generateSentence()
-    +countMissingTokens()
+@startuml
+!include Graphic.puml
+
+left to right direction
+actor User
+
+rectangle NoSenGen {
+    (Generate NoSense Sentences) as GenSentences
+    (Analyze Syntax with Google API) as SyntaxAnalysis
+    (Check Toxicity with Google API) as ToxicityCheck
+    (Get Semantic Tree) as SemanticTree
 }
 
-class Template {
-    -namesNumber: int
-    -verbsNumber: int
-    -adjNumber: int
-    +getRequiredTokens()
+rectangle "Google Cloud APIs" {
+    (Analyze Syntax) as SyntaxAPI
+    (Moderate Text) as ModerateAPI
 }
 
-class Templates {
-    +fillTemplate()
-    +chooseTemplate()
-}
+' Relazioni principali utente-sistema
+User -- GenSentences
+User -- SemanticTree
 
-class Dictionary {
-    +getToken()
-    +getName()
-    +getVerb()
-    +getAdj()
-}
+' Include: generazione frasi richiede analisi sintattica e controllo tossicità
+GenSentences ..> (Analyze Syntax with Google API) : <<include>>
+GenSentences ..> (Check Toxicity with Google API) : <<include>>
 
-class Analyzer {
-    +analyzeSentence()
-}
+' SemanticTree si basa sull'analisi sintattica
+SemanticTree ..> (Analyze Syntax with Google API) : <<include>>
 
-class Moderator {
-    +checkToxicity()
-}
-
-class Sentence {
-    -content: String
-    +getSentence()
-    +setSentence()
-}
-
-class Token {
-    -value: String
-    +getToken()
-    +setToken()
-}
-
-class Name extends Token
-class Adjective extends Token
-class Verb extends Token {
-    -regular: boolean
-}
-
-' Relationships with multiplicity
-Templates "1" *-- "*" Template : manages
-Dictionary "1" *-- "*" Token : contains
-Sentence "1" o-- "*" Token : contains
-
-' Main flow relationships
-Sentence --> Analyzer : analyzed by
-Generator --> Sentence : generates >
-Generator --> Template : uses
-Template --> Templates : managed by
-Generator --> Dictionary : gets tokens from
-Analyzer --> Token : produces
-Sentence --> Moderator : validated by
+' API esterne
+SyntaxAnalysis --> SyntaxAPI
+ToxicityCheck --> ModerateAPI
 
 @enduml
