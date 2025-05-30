@@ -42,6 +42,8 @@ public class GeneratorController {
             @RequestParam int futureSentences
     ) {
         try {
+            //ApiKey
+            String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg";
             // Validazione
             if (totalSentences > 20) {
                 throw new IllegalArgumentException("[Error]: Maximum 20 sentences allowed");
@@ -57,13 +59,13 @@ public class GeneratorController {
 
             // Genera le frasi per ogni tempo verbale
             for (int i = 0; i < pastSentences; i++) {
-                response.getPastSentences().add(generator.genSentence(sentence, 0));
+                response.getPastSentences().add(generator.genSentence(sentence, 0, apiKey ));
             }
             for (int i = 0; i < presentSentences; i++) {
-                response.getPresentSentences().add(generator.genSentence(sentence, 1));
+                response.getPresentSentences().add(generator.genSentence(sentence, 1, apiKey));
             }
             for (int i = 0; i < futureSentences; i++) {
-                response.getFutureSentences().add(generator.genSentence(sentence, 2));
+                response.getFutureSentences().add(generator.genSentence(sentence, 2, apiKey));
             }
 
             return response;
@@ -78,8 +80,11 @@ public class GeneratorController {
             @RequestParam String inputSentence
     ) {
         try {
+            //ApiKey
+            String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg";
+
             // Chiama il metodo Semantic_Tree della tua classe GoogleLanguageAPI
-            String semanticTree = GoogleLanguageAPI.Semantic_Tree(inputSentence);
+            String semanticTree = GoogleLanguageAPI.Semantic_Tree(inputSentence, apiKey);
 
             // Sostituisci i '\n' con '<br>' per il rendering HTML
             String semanticTreeWithBr = semanticTree.replace("\n", "<br>");
@@ -90,6 +95,20 @@ public class GeneratorController {
 
             // Restituisci una risposta HTTP con un oggetto JSON
             return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            throw new RuntimeException("[Error]: generating sentences: " + e.getMessage(), e);
+        }
+    }
+
+
+    @PostMapping("/getTheKey")
+    @ResponseBody  // Questo ci permette di restituire JSON invece di una lista
+    public void apiKeyfunction(
+            @RequestParam String apiKey
+    ) {
+        try {
+
 
         } catch (Exception e) {
             throw new RuntimeException("[Error]: generating sentences: " + e.getMessage(), e);
