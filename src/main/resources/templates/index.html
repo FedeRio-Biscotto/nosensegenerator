@@ -107,6 +107,13 @@
 <h1 class="styled-title">Welcome to NoSenseGenerator! :D</h1>
 
 <form id="generatorForm">
+    <div class="apiKeyformgroup" id="apiKeyGroup">
+        <label>Insert API key:</label>
+        <label for="apiKey"></label><input type="text" name="apiKey" id="apiKey" required>
+        <div id="apiKeyError" class="error" style="display: none;">API Key is required!</div>
+        <button type="submit" id="keyButton" onclick="ApiKeyFunction(event)">Save api Key</button>
+    </div>
+
     <div class="mode-group">
         <label>Mode:</label>
         <label for="mode"></label><select name="mode" id="mode" required onchange="toggleInputSentence()">
@@ -114,12 +121,6 @@
         <option value="2">Generate totally random sentences</option>
         <option value="3">Get the Semantic Tree</option>
     </select>
-    </div>
-
-    <div class="apiKeyformgroup" id="apiKeyGroup">
-        <label>Insert API key:</label>
-        <label for="apiKey"></label><input type="text" name="apiKey" id="apiKey" required>
-        <button type="submit" id="keyButton" onclick="ApiKeyFunction(event)">Save api Key</button>
     </div>
 
     <div class="form-group" id="inputSentenceGroup">
@@ -159,6 +160,13 @@
 <div id="results"></div>
 
 <script>
+    document.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Blocca il comportamento predefinito
+        console.log('Tasto Enter bloccato.'); // Solo per debug, rimuovere in produzione
+    }
+});
+
     //Toglie il blocco input sentence se viene selezionato il mode 2
     function toggleInputSentence() {
         const mode = document.getElementById('mode').value;
@@ -367,6 +375,8 @@
                 </div>
             `;
     }
+
+
     // Inizializza lo stato del form
     toggleInputSentence();
 </script>

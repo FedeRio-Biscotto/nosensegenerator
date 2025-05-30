@@ -42,13 +42,14 @@ public class GeneratorController {
     @PostMapping("/generate")
     @ResponseBody  // Questo ci permette di restituire JSON invece di una vista
     public GeneratorResponse generateSentences(
-            @RequestParam(required = false) String inputSentence,
-            @RequestParam int mode,
-            @RequestParam int totalSentences,
-            @RequestParam int pastSentences,
-            @RequestParam int presentSentences,
-            @RequestParam int futureSentences
+            @RequestParam(required = false, defaultValue = "") String inputSentence,
+            @RequestParam(required = false, defaultValue = "1") int mode,
+            @RequestParam(required = false, defaultValue = "0") int totalSentences,
+            @RequestParam(required = false, defaultValue = "0") int pastSentences,
+            @RequestParam(required = false, defaultValue = "0") int presentSentences,
+            @RequestParam(required = false, defaultValue = "0") int futureSentences
     ) {
+
         try {
             //ApiKey
             if (savedApiKey == null) {
@@ -133,12 +134,13 @@ public class GeneratorController {
         try {
             if (apiKey == null || apiKey.isBlank()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("[Error]: API key non valida");
+                        .body(" API key non valida");
             }
             // Salva la API key nel campo savedApiKey
             this.savedApiKey = apiKey;
 
-            System.out.println("API key salvata correttamente: " + savedApiKey); // Debug
+            //[DEBUG]
+            //System.out.println("API key salvata correttamente: " + savedApiKey); // Debug
 
             return ResponseEntity.ok("API key salvata correttamente");
         } catch (Exception e) {
