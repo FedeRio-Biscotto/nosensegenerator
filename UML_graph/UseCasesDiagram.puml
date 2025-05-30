@@ -1,49 +1,34 @@
-@startuml Nonsense_Sentence_Generator
+@startuml
+!include Graphic.puml
 
-' Actors
-actor "User" as User
-actor "Language Analysis API" as AnLingAPI
-actor "Toxicity API" as ToxicAPI
+left to right direction
+actor User
 
-rectangle "Nonsense Sentence Generator" {
-    ' Primary use cases
-    usecase "Input Sentence" as Input
-    usecase "Select Verb Tense" as VerbTense
-    usecase "Analyze Sentence" as Analysis
-    usecase "Generate Nonsense Sentence" as Generate
-    usecase "Check Toxicity" as Verify
-    usecase "Display Result" as Show
-
-    ' Extensions
-    usecase "Save New Words\nto Dictionary" as SaveWords
-    usecase "Load Template" as LoadTemplate
+rectangle NoSenGen {
+    (Generate NoSense Sentences) as GenSentences
+    (Analyze Syntax with Google API) as SyntaxAnalysis
+    (Check Toxicity with Google API) as ToxicityCheck
+    (Get Semantic Tree) as SemanticTree
 }
 
-' User interactions
-User --> Input
-User --> VerbTense
-User --> Show
+rectangle "Google Cloud APIs" {
+    (Analyze Syntax) as SyntaxAPI
+    (Moderate Text) as ModerateAPI
+}
 
-' Main flow
-Input ..> Analysis : <<include>>
-VerbTense ..> Analysis : <<include>>
-Analysis --> AnLingAPI : analyze text
-AnLingAPI --> Analysis : return tokens
-Analysis ..> SaveWords : <<extend>>
-Analysis ..> Generate : <<include>>
+' Relazioni principali utente-sistema
+User -- GenSentences
+User -- SemanticTree
 
-' Generation flow
-Generate ..> LoadTemplate : <<include>>
-Generate ..> Verify : <<include>>
+' Include: generazione frasi richiede analisi sintattica e controllo tossicità
+GenSentences ..> (Analyze Syntax with Google API) : <<include>>
+GenSentences ..> (Check Toxicity with Google API) : <<include>>
 
-' Verification flow
-Verify --> ToxicAPI : check content
-ToxicAPI --> Verify : return rating
-Verify ..> Show : <<include>>
+' SemanticTree si basa sull'analisi sintattica
+SemanticTree ..> (Analyze Syntax with Google API) : <<include>>
 
-' Notes
-note right of Analysis : Breaks sentence into\ntokens (nouns, verbs,\nadjectives)
-note right of Generate : Uses templates and\nrandom word selection
-note right of Verify : Ensures generated content\nis appropriate
+' API esterne
+SyntaxAnalysis --> SyntaxAPI
+ToxicityCheck --> ModerateAPI
 
 @enduml
