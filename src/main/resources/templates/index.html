@@ -3,6 +3,7 @@
 <head>
     <title>NoSenseGenerator</title>
     <style>
+        /* Stile del corpo del documento */
         body {
             font-family: "Comic Sans MS", sans-serif;
             max-width: 800px;
@@ -10,39 +11,39 @@
             padding: 20px;
             background-color: #dff1f5;
         }
+
+        /* Titolo principale */
         .styled-title {
             font-family: "Comic Sans MS", cursive;
             font-size: 2.5em;
-            color: black; /* Colore del testo principale */
+            color: black;
             text-align: center;
             text-shadow:
-                    -0.5px -0.5px 0 white, /* Contorno blu chiaro (alto-sinistra) */
-                    0.5px -0.5px 0 white,  /* Contorno blu chiaro (alto-destra) */
-                    -0.5px 0.5px 0 white,  /* Contorno blu chiaro (basso-sinistra) */
-                    0.5px 0.5px 0 white;   /* Contorno blu chiaro (basso-destra) */
+                    -0.5px -0.5px 0 white,
+                    0.5px -0.5px 0 white,
+                    -0.5px 0.5px 0 white,
+                    0.5px 0.5px 0 white;
         }
-        .form-group {
+
+        /* Stile per i gruppi di input */
+        .form-group, .apiKeyformgroup, .mode-group {
             margin-bottom: 15px;
             background-color: white;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Effetti di box-decoration */
+        .form-group {
             border: 2px solid #008cff;
         }
+
         .apiKeyformgroup {
-            margin-bottom: 15px;
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             border: 2px solid red;
         }
+
         .mode-group {
-            margin-bottom: 15px;
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             border: 2px solid #ff00dd;
         }
 
@@ -160,12 +161,14 @@
 <div id="results"></div>
 
 <script>
+    //Quando si clicca invio, non succede nulla
     document.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Blocca il comportamento predefinito
-        console.log('Tasto Enter bloccato.'); // Solo per debug, rimuovere in produzione
-    }
-});
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            //Stampa su console
+            console.log('[System]: Enter key pressed');
+        }
+    });
 
     //Toglie il blocco input sentence se viene selezionato il mode 2
     function toggleInputSentence() {
@@ -187,7 +190,7 @@
             generateButton.style.display = 'block';
             semanticTree.style.display = 'none';
 
-        } else if (mode === '2') { // Mode 2
+        } else if (mode === '2') {
             inputsentenceGroup.style.display = 'none';
             sentenceGroup.style.display = 'block';
             pastGroup.style.display = 'block';
@@ -195,7 +198,7 @@
             futureGroup.style.display = 'block';
             generateButton.style.display = 'block';
             semanticTree.style.display = 'none';
-        } else {
+        } else { //mode === '3'
             inputsentenceGroup.style.display = 'block';
             sentenceGroup.style.display = 'none';
             pastGroup.style.display = 'none';
@@ -212,13 +215,14 @@
     function updateRemainingCount() {
         const total = parseInt(document.getElementById('totalSentences').value) || 0;
         if (total > 20) {
-            alert('Maximum 20 sentences allowed');
+            alert('[Error]: Maximum 20 sentences allowed');
             document.getElementById('totalSentences').value = 20;
         }
     }
 
     //Controlla che il num delle frasi non superi il totale
     function validateTotalCount() {
+        //Riferimenti ai campi input
         const total = parseInt(document.getElementById('totalSentences').value) || 0;
         const past = parseInt(document.getElementById('pastSentences').value) || 0;
         const present = parseInt(document.getElementById('presentSentences').value) || 0;
@@ -226,49 +230,57 @@
 
         const sum = past + present + future;
         if (sum > total) {
-            alert(`Total of tense-specific sentences (${sum}) cannot exceed total sentences (${total})`);
+            alert(`[Error]: Total of tense-specific sentences (${sum}) cannot exceed total sentences (${total})`);
         }
 
 
     }
 
     async function ApiKeyFunction(event) {
-    event.preventDefault(); // Previeni il caricamento della pagina di default
+        event.preventDefault(); // Previeni il caricamento della pagina di default
 
-    const apiKeyInput = document.getElementById('apiKey').value.trim(); // Ottieni il valore dell'API key
-    const loading = document.getElementById('loading');
-    const error = document.getElementById('error');
+        //Riferimenti ai campi input
+        const apiKeyInput = document.getElementById('apiKey').value.trim();
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const APIinputField = document.getElementById("apiKey");
 
-    try {
-        // Mostra il caricamento
-        loading.style.display = 'block';
-        error.style.display = 'none';
-
-        const response = await fetch('/api/getTheKey', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `apiKey=${encodeURIComponent(apiKeyInput)}`
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || `[Error]: HTTP error! status: ${response.status}`);
+        // Controlla se il campo input è vuoto
+        if (APIinputField.value.trim() === "") {
+            alert("[Error]: The API Key field cannot be empty!");
         }
 
-        const data = await response.text(); // Risposta attesa: la chiave salvata
-        console.log(`Chiave salvata: ${data}`); // Controlla la chiave salvata
+        try {
+            // Mostra il caricamento
+            loading.style.display = 'block';
+            error.style.display = 'none';
 
-        alert('API key saved successfully!');
-    } catch (err) {
-        error.textContent = '[Error]: ' + (err.message || 'Si è verificato un errore sconosciuto');
-        error.style.display = 'block';
-    } finally {
-        // Nascondi il caricamento
-        loading.style.display = 'none';
+            const response = await fetch('/api/getTheKey', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `apiKey=${encodeURIComponent(apiKeyInput)}`
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || `[Error]: HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.text(); // Risposta attesa: la chiave salvata
+            console.log(`Saved key: ${data}`); //[DEBUG] chiave salvata
+
+            alert('[System]: API key saved successfully!');
+        } catch (err) {
+            error.textContent = '[Error]: ' + (err.message || 'Si è verificato un errore sconosciuto');
+            console.log(error.textContent);
+            //error.style.display = 'block';
+        } finally {
+            // Nascondi il caricamento
+            loading.style.display = 'none';
+        }
     }
-}
 
     //Restituisce il semantic tree
     async function semanticTree(event) {
@@ -279,6 +291,12 @@
         const error = document.getElementById('error');
         const results = document.getElementById('results');
         const semanticTree = document.getElementById('semanticTreeButton');
+        const SentenceinputField = document.getElementById("inputSentence");
+
+        // Controlla se il campo input è vuoto
+        if (SentenceinputField.value.trim() === "") {
+            alert("[Error]: The input sentence is missing!");
+        }
 
         //Resetta lo stato del form
         loading.style.display = 'block';
@@ -313,7 +331,8 @@
                 `;
         } catch (err) {
             error.textContent = '[Error]:  ' + (err.message || 'Unknown error occurred');
-            error.style.display = 'block';
+            console.log(error.textContent);
+            //error.style.display = 'block';
         } finally {
             loading.style.display = 'none';
         }
@@ -323,10 +342,26 @@
     async function generateSentences(event) {
         event.preventDefault();
 
+        //Riferimenti ai campi input
         const form = document.getElementById('generatorForm');
         const loading = document.getElementById('loading');
         const error = document.getElementById('error');
         const results = document.getElementById('results');
+        const SentenceinputField = document.getElementById("inputSentence");
+        const total = parseInt(document.getElementById('totalSentences').value) || 0;
+
+        // Controlla se il campo input è vuoto
+        if (SentenceinputField.value.trim() === "") {
+            alert("[Error]: The input sentence is missing!");
+        }
+        //Controlla se le frasi totali sono almeno 1
+        if (total < 1) {
+            alert("[Error]: You have to generate at least 1 sentence!");
+        }
+        //Controlla che la somma delle frasi specifiche sia uguale al totale
+        if (total !== parseInt(document.getElementById('pastSentences').value) + parseInt(document.getElementById('presentSentences').value) + parseInt(document.getElementById('futureSentences').value)) {
+            alert("[Error]: The sum of the specific sentences must be equal to the total sentences!");
+        }
 
         //Resetta lo stato del form
         loading.style.display = 'block';
@@ -356,7 +391,8 @@
                 `;
         } catch (err) {
             error.textContent = '[Error]:  ' + (err.message || 'Unknown error occurred');
-            error.style.display = 'block';
+            console.log(error.textContent);
+            //error.style.display = 'block';
         } finally {
             loading.style.display = 'none';
         }

@@ -31,16 +31,15 @@ public class GeneratorController {
         this.generator = generator;
     }
 
-
     @GetMapping("/")
     public String showHomePage(Model model) {
-        // Aggiungiamo alcuni attributi per gestire i limiti
-        model.addAttribute("maxSentences", 20);
+        // Imposta valori massimi come attributi del modello
+        model.addAttribute("maxSentences", 20); //(Max frasi da generare)
         return "index";
     }
 
     @PostMapping("/generate")
-    @ResponseBody  // Questo ci permette di restituire JSON invece di una vista
+    @ResponseBody  // Risposta come JSON invece di una vista tradizionale
     public GeneratorResponse generateSentences(
             @RequestParam(required = false, defaultValue = "") String inputSentence,
             @RequestParam(required = false, defaultValue = "1") int mode,
@@ -53,17 +52,10 @@ public class GeneratorController {
         try {
             //ApiKey
             if (savedApiKey == null) {
-                // Crea un'istanza di GeneratorResponse per l'errore
-                GeneratorResponse errorResponse = new GeneratorResponse();
-                errorResponse.setError(true); // Imposta il flag di errore
-                errorResponse.setMessage("[Error]: No API key provided"); // Messaggio di errore
-                //errorResponse.setDetails("L'API key non è stata fornita. Assicurati di inserirla e riprova."); // Dettagli aggiuntivi
-
-                // Restituisci l'errore incapsulato in un ResponseEntity
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse).getBody();
+                throw new IllegalArgumentException("[Error]: Api Key is missing");
             }
 
-            // Validazione
+            // Controlli di validazione per il numero di frasi
             if (totalSentences > 20) {
                 throw new IllegalArgumentException("[Error]: Maximum 20 sentences allowed");
             }
@@ -71,98 +63,94 @@ public class GeneratorController {
                 throw new IllegalArgumentException("[Error]: Sum of tense-specific sentences must equal total sentences");
             }
 
+            // Inizializza risposta
             GeneratorResponse response = new GeneratorResponse();
 
-            // Se mode è 2, impostiamo inputSentence come stringa vuota
-            String sentence = (mode == 2) ? "" : inputSentence;
-
-            // Genera le frasi per ogni tempo verbale
+            // Genera frasi per ognuno dei tempi verbali
             for (int i = 0; i < pastSentences; i++) {
-                response.getPastSentences().add(generator.genSentence(sentence, 0, savedApiKey ));
+                response.getPastSentences().add(generator.genSentence(inputSentence, 0, savedApiKey ));
             }
             for (int i = 0; i < presentSentences; i++) {
-                response.getPresentSentences().add(generator.genSentence(sentence, 1, savedApiKey));
+                response.getPresentSentences().add(generator.genSentence(inputSentence, 1, savedApiKey));
             }
             for (int i = 0; i < futureSentences; i++) {
-                response.getFutureSentences().add(generator.genSentence(sentence, 2, savedApiKey));
+                response.getFutureSentences().add(generator.genSentence(inputSentence, 2, savedApiKey));
             }
 
             return response;
         } catch (Exception e) {
+            // Gestione dell'errore globale
             throw new RuntimeException("[Error]: generating sentences: " + e.getMessage(), e);
         }
     }
 
     @PostMapping("/Tree")
-    @ResponseBody  // Questo ci permette di restituire JSON invece di una lista
+    @ResponseBody  // Ritorna la struttura JSON per il Semantic Tree
     public ResponseEntity<Map<String, String>> semanticTree(
             @RequestParam String inputSentence
     ) {
         try {
-            //ApiKey
-            if(savedApiKey==null){
-                // Creazione della mappa con il messaggio di errore
+            // Valida l'API Key
+            if (savedApiKey == null) {
+                // Crea risposta JSON per errore API key mancante
                 Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("[Error]:", " No API key provided");
-
-                // Restituisci l'errore come ResponseEntity
+                errorResponse.put("[Error]:", "No API key provided");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
             }
 
-            // Chiama il metodo Semantic_Tree della tua classe GoogleLanguageAPI
+            // Ottiene l'albero semantico dall'API
             String semanticTree = GoogleLanguageAPI.Semantic_Tree(inputSentence, savedApiKey);
 
-            // Sostituisci i '\n' con '<br>' per il rendering HTML
+            // Migliora il rendering sostituendo "\n" con "<br>"
             String semanticTreeWithBr = semanticTree.replace("\n", "<br>");
 
-            // Crea una mappa con i dati in formato JSON
+            // Invia JSON con la risposta formattata
             Map<String, String> response = new HashMap<>();
             response.put("semanticTree", semanticTreeWithBr);
 
-            // Restituisci una risposta HTTP con un oggetto JSON
             return ResponseEntity.ok(response);
-
         } catch (Exception e) {
-            throw new RuntimeException("[Error]: generating sentences: " + e.getMessage(), e);
+            // Errore non previsto
+            throw new RuntimeException("[Error]: Error generating semantic tree: " + e.getMessage(), e);
         }
     }
-
 
     @PostMapping("/getTheKey")
     @ResponseBody
     public ResponseEntity<String> apiKeyfunction(@RequestParam String apiKey) {
         try {
+            // Valida la chiave API
             if (apiKey == null || apiKey.isBlank()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(" API key non valida");
+                        .body("API key non valida");
             }
-            // Salva la API key nel campo savedApiKey
+
+            // Salva la API Key e restituisci un messaggio di conferma
             this.savedApiKey = apiKey;
-
-            //[DEBUG]
-            //System.out.println("API key salvata correttamente: " + savedApiKey); // Debug
-
-            return ResponseEntity.ok("API key salvata correttamente");
+            return ResponseEntity.ok("API key saved successfully");
         } catch (Exception e) {
-            throw new RuntimeException("[Error]: Errore durante il salvataggio della API key: " + e.getMessage(), e);
+            // Gestione dell'errore
+            throw new RuntimeException("[Error]: " + e.getMessage(), e);
         }
     }
 
-    // Classe interna per la risposta JSON
+    // Classe statica interna per la struttura delle risposte JSON
     public static class GeneratorResponse {
         private List<String> pastSentences = new ArrayList<>();
         private List<String> presentSentences = new ArrayList<>();
         private List<String> futureSentences = new ArrayList<>();
 
-        // Getters e setters
+        // Getters e Setters per ogni lista di frasi
         public List<String> getPastSentences() { return pastSentences; }
         public List<String> getPresentSentences() { return presentSentences; }
         public List<String> getFutureSentences() { return futureSentences; }
 
+        // Setta se c'è un errore
         public void setError(boolean b) {
             error = b;
         }
 
+        // Setta i messaggi di uscita
         public void setMessage(String s) {
             message = s;
         }
