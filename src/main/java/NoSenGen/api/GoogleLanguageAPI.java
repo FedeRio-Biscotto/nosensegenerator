@@ -20,7 +20,7 @@ public class GoogleLanguageAPI {
     private static ArrayList<MyVerb> verbs_past = new ArrayList<>();
     private static ArrayList<MyAdjective> adj = new ArrayList<>();
 
-    public static void LanguageApi(String sentence) throws Exception {
+    public static void LanguageApi(String sentence, String apiKey) throws Exception {
         // Reinizializza le liste prima di ogni nuova analisi
         nouns.clear();
         verbs.clear();
@@ -29,7 +29,7 @@ public class GoogleLanguageAPI {
         adj.clear();
 
         //Parsing del JSON
-        JSONObject jsonObject = new JSONObject(CallAPI(sentence));
+        JSONObject jsonObject = new JSONObject(CallAPI(sentence, apiKey));
         JSONArray tokens = jsonObject.getJSONArray("tokens");
 
         //Estrapola i tokens
@@ -66,10 +66,10 @@ public class GoogleLanguageAPI {
 
     }
 
-    public static String Semantic_Tree(String sentence) throws Exception{
+    public static String Semantic_Tree(String sentence, String apiKey) throws Exception{
         //Variabili
         String s = "";
-        String response = CallAPI(sentence);
+        String response = CallAPI(sentence, apiKey);
 
 
         //System.out.println("----Semantic Tree----");
@@ -92,9 +92,9 @@ public class GoogleLanguageAPI {
     }
 
     //Metodo per chiamare l'API
-    private static String CallAPI(String sentence) throws Exception{
+    private static String CallAPI(String sentence, String apiKey) throws Exception{
         //API Key
-        String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //"CHIAVE API DA INSERIRE";
+        //String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //"CHIAVE API DA INSERIRE";
 
         //Endpoint dell'API
         String url = "https://language.googleapis.com/v1/documents:analyzeSyntax?key=" + apiKey;
