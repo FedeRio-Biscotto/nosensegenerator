@@ -119,6 +119,7 @@
     <div class="apiKeyformgroup" id="apiKeyGroup">
         <label>Insert API key:</label>
         <label for="apiKey"></label><input type="text" name="apiKey" id="apiKey" required>
+        <button type="submit" id="keyButton" onclick="ApiKeyFunction(event)">Save api Key</button>
     </div>
 
     <div class="form-group" id="inputSentenceGroup">
@@ -219,9 +220,49 @@
         if (sum > total) {
             alert(`Total of tense-specific sentences (${sum}) cannot exceed total sentences (${total})`);
         }
+
+
     }
 
+    async function ApiKeyFunction(event) {
+    event.preventDefault(); // Previeni il caricamento della pagina di default
 
+    const apiKeyInput = document.getElementById('apiKey').value.trim(); // Ottieni il valore dell'API key
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+
+    try {
+        // Mostra il caricamento
+        loading.style.display = 'block';
+        error.style.display = 'none';
+
+        const response = await fetch('/api/getTheKey', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `apiKey=${encodeURIComponent(apiKeyInput)}`
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || `[Error]: HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.text(); // Risposta attesa: la chiave salvata
+        console.log(`Chiave salvata: ${data}`); // Controlla la chiave salvata
+
+        alert('API key saved successfully!');
+    } catch (err) {
+        error.textContent = '[Error]: ' + (err.message || 'Si è verificato un errore sconosciuto');
+        error.style.display = 'block';
+    } finally {
+        // Nascondi il caricamento
+        loading.style.display = 'none';
+    }
+}
+
+    //Restituisce il semantic tree
     async function semanticTree(event) {
         event.preventDefault();
 
@@ -237,12 +278,13 @@
         results.innerHTML = '';
 
         try {
-            const response = await fetch('/Tree', {
+            const response = await fetch('/api/Tree', {
                 method: 'POST',
                 body: new FormData(form)
             });
 
-            console.log(typeof semanticTree);
+            //[Debug]
+            //console.log(typeof semanticTree);
 
 
             if (!response.ok) {
@@ -284,7 +326,7 @@
         results.innerHTML = '';
 
         try {
-            const response = await fetch('/generate', {
+            const response = await fetch('/api/generate', {
                 method: 'POST',
                 body: new FormData(form)
             });
