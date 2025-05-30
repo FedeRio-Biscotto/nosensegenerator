@@ -12,7 +12,10 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class Main {
 
-static Generator g =new Generator();
+    @Bean
+    public Generator generator() {
+        return new Generator();
+    }
 
 
     @Bean
