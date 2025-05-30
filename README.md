@@ -42,29 +42,66 @@ It is intended for **developers, testers, writers**, and anyone curious about la
 To run this project, you will need:
 
 - Java 17 or higher  
-- Maven (recommended)  
+- Maven must be installed
 - Internet connection (for dependency resolution)  
 - Operating system: Linux / Windows / macOS  
 - Git (to clone the repository)
 
-### Installation Steps
+### Installation Steps 
+Check if Maven is installed (optional)
 
+  ```bash
+  mvn -v
+  ```
+Clone the repository and build the project
 ```bash
 git clone https://github.com/FedeRio-Biscotto/nosensegenerator.git
 cd nosensegenerator
 mvn clean install
 ```
 
+#### Build the Project
+To compile the project, run:
+  ```bash
+  mvn complie
+  ```
 ### Running the Application
-
+#### 1. From the Command Line
+You can start the Spring Boot application directly with:
 ```bash
-cd target
-java -jar NoSenseGenerator-1.0-SNAPSHOT.jar
+mvn spring-boot:run
 ```
+This will automatically start the embedded application server (e.g., Tomcat).
 
-Alternatively, from IntelliJ:
-- Import as a Maven project
-- Run the `Main` class from the `main/java/NoSenGen/generator/Main.java`
+#### 2. Build and Run the Executable JAR
+To build and run the executable JAR file:
+
+  ```bash
+  mvn package
+  ```
+The JAR file will be located in the `target` directory. 
+Run it using:
+  ```bash
+  mvn java -jar target/NoSenseGenerator-1.0-SNAPSHOT.jar
+
+  ```
+
+
+
+---
+
+### Alternatively, from IntelliJ
+- Open IntelliJ IDEA and import the project as a Maven project.
+- Once the project is loaded, navigate to the `Main` class, typically located in:  
+  `src/main/java/NoSenGen/generator/Main.java`.
+- Right-click on the `Main` class and select **Run 'Main'** to start the application.
+
+---
+
+### Notes
+- By default, Spring Boot will start the application on port **8080**. You can access the application via `http://localhost:8080`.
+- Modify the `application.properties` file (located in `src/main/resources`) to configure the application as needed.
+- Logs and server activity will be output to the terminal while the application is running.
 
 ---
 
