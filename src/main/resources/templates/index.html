@@ -10,13 +10,42 @@
             padding: 20px;
             background-color: #dff1f5;
         }
+        .styled-title {
+            font-family: "Comic Sans MS", cursive;
+            font-size: 2.5em;
+            color: black; /* Colore del testo principale */
+            text-align: center;
+            text-shadow: 
+            -0.5px -0.5px 0 white, /* Contorno blu chiaro (alto-sinistra) */
+            0.5px -0.5px 0 white,  /* Contorno blu chiaro (alto-destra) */
+            -0.5px 0.5px 0 white,  /* Contorno blu chiaro (basso-sinistra) */
+            0.5px 0.5px 0 white;   /* Contorno blu chiaro (basso-destra) */
+    }
         .form-group {
             margin-bottom: 15px;
             background-color: white;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 2px solid #008cff;
         }
+        .apiKeyformgroup {
+            margin-bottom: 15px;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 2px solid red;
+        }
+        .mode-group {
+            margin-bottom: 15px;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 2px solid #ff00dd;
+        }
+
         label {
             display: block;
             margin-bottom: 5px;
@@ -28,6 +57,8 @@
             margin-bottom: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            box-sizing: border-box;
+
         }
         button {
             background-color: #4CAF50;
@@ -73,41 +104,46 @@
     </style>
 </head>
 <body>
-    <h1>Welcome to NoSenseGenerator! :D</h1>
+    <h1 class="styled-title">Welcome to NoSenseGenerator! :D</h1>
 
     <form id="generatorForm">
-        <div class="form-group">
+        <div class="mode-group">
             <label>Mode:</label>
-            <select name="mode" id="mode" required onchange="toggleInputSentence()">
+            <label for="mode"></label><select name="mode" id="mode" required onchange="toggleInputSentence()">
                 <option value="1">Insert a sentence to analyze and Generate random sentences</option>
                 <option value="2">Generate totally random sentences</option>
                 <option value="3">Get the Semantic Tree</option>
             </select>
         </div>
 
+        <div class="apiKeyformgroup" id="apiKeyGroup">
+            <label>Insert API key:</label>
+            <label for="apiKey"></label><input type="text" name="apiKey" id="apiKey" required>
+        </div>
+
         <div class="form-group" id="inputSentenceGroup">
             <label>Input Sentence:</label>
-            <input type="text" name="inputSentence" id="inputSentence">
+            <label for="inputSentence"></label><input type="text" name="inputSentence" id="inputSentence">
         </div>
 
         <div class="form-group" id="totalSentencesGroup">
             <label>Total Sentences (max 20):</label>
-            <input type="number" name="totalSentences" id="totalSentences" min="1" max="20" required onchange="updateRemainingCount()">
+            <label for="totalSentences"></label><input type="number" name="totalSentences" id="totalSentences" min="1" max="20" required onchange="updateRemainingCount()">
         </div>
 
         <div class="form-group" id="pastSentencesGroup">
             <label>Past Tense Sentences:</label>
-            <input type="number" name="pastSentences" id="pastSentences" min="0" required onchange="validateTotalCount()">
+            <label for="pastSentences"></label><input type="number" name="pastSentences" id="pastSentences" min="0" required onchange="validateTotalCount()">
         </div>
 
         <div class="form-group" id="presentSentencesGroup">
             <label>Present Tense Sentences:</label>
-            <input type="number" name="presentSentences" id="presentSentences" min="0" required onchange="validateTotalCount()">
+            <label for="presentSentences"></label><input type="number" name="presentSentences" id="presentSentences" min="0" required onchange="validateTotalCount()">
         </div>
 
         <div class="form-group" id="futureSentencesGroup">
             <label>Future Tense Sentences:</label>
-            <input type="number" name="futureSentences" id="futureSentences" min="0" required onchange="validateTotalCount()">
+            <label for="futureSentences"></label><input type="number" name="futureSentences" id="futureSentences" min="0" required onchange="validateTotalCount()">
         </div>
 
         <button type="submit" id="generateButton" onclick="generateSentences(event)">Generate Sentences</button>
