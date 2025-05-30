@@ -10,13 +10,42 @@
             padding: 20px;
             background-color: #dff1f5;
         }
+        .styled-title {
+            font-family: "Comic Sans MS", cursive;
+            font-size: 2.5em;
+            color: black; /* Colore del testo principale */
+            text-align: center;
+            text-shadow:
+                    -0.5px -0.5px 0 white, /* Contorno blu chiaro (alto-sinistra) */
+                    0.5px -0.5px 0 white,  /* Contorno blu chiaro (alto-destra) */
+                    -0.5px 0.5px 0 white,  /* Contorno blu chiaro (basso-sinistra) */
+                    0.5px 0.5px 0 white;   /* Contorno blu chiaro (basso-destra) */
+        }
         .form-group {
             margin-bottom: 15px;
             background-color: white;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 2px solid #008cff;
         }
+        .apiKeyformgroup {
+            margin-bottom: 15px;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 2px solid red;
+        }
+        .mode-group {
+            margin-bottom: 15px;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 2px solid #ff00dd;
+        }
+
         label {
             display: block;
             margin-bottom: 5px;
@@ -28,6 +57,8 @@
             margin-bottom: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            box-sizing: border-box;
+
         }
         button {
             background-color: #4CAF50;
@@ -73,214 +104,219 @@
     </style>
 </head>
 <body>
-    <h1>Welcome to NoSenseGenerator! :D</h1>
+<h1 class="styled-title">Welcome to NoSenseGenerator! :D</h1>
 
-    <form id="generatorForm">
-        <div class="form-group">
-            <label>Mode:</label>
-            <select name="mode" id="mode" required onchange="toggleInputSentence()">
-                <option value="1">Insert a sentence to analyze and Generate random sentences</option>
-                <option value="2">Generate totally random sentences</option>
-                <option value="3">Get the Semantic Tree</option>
-            </select>
-        </div>
-
-        <div class="form-group" id="inputSentenceGroup">
-            <label>Input Sentence:</label>
-            <input type="text" name="inputSentence" id="inputSentence">
-        </div>
-
-        <div class="form-group" id="totalSentencesGroup">
-            <label>Total Sentences (max 20):</label>
-            <input type="number" name="totalSentences" id="totalSentences" min="1" max="20" required onchange="updateRemainingCount()">
-        </div>
-
-        <div class="form-group" id="pastSentencesGroup">
-            <label>Past Tense Sentences:</label>
-            <input type="number" name="pastSentences" id="pastSentences" min="0" required onchange="validateTotalCount()">
-        </div>
-
-        <div class="form-group" id="presentSentencesGroup">
-            <label>Present Tense Sentences:</label>
-            <input type="number" name="presentSentences" id="presentSentences" min="0" required onchange="validateTotalCount()">
-        </div>
-
-        <div class="form-group" id="futureSentencesGroup">
-            <label>Future Tense Sentences:</label>
-            <input type="number" name="futureSentences" id="futureSentences" min="0" required onchange="validateTotalCount()">
-        </div>
-
-        <button type="submit" id="generateButton" onclick="generateSentences(event)">Generate Sentences</button>
-        <button type="submit" id="semanticTreeButton" onclick="semanticTree(event)" style="display: none;">Semantic Tree</button>
-    </form>
-
-    <div id="loading" class="loading">
-        We are generating your sentences... Please wait... -_-
+<form id="generatorForm">
+    <div class="mode-group">
+        <label>Mode:</label>
+        <label for="mode"></label><select name="mode" id="mode" required onchange="toggleInputSentence()">
+        <option value="1">Insert a sentence to analyze and Generate random sentences</option>
+        <option value="2">Generate totally random sentences</option>
+        <option value="3">Get the Semantic Tree</option>
+    </select>
     </div>
 
-    <div id="error" class="error" style="display: none;"></div>
-    <div id="results"></div>
+    <div class="apiKeyformgroup" id="apiKeyGroup">
+        <label>Insert API key:</label>
+        <label for="apiKey"></label><input type="text" name="apiKey" id="apiKey" required>
+    </div>
 
-    <script>
-        //Toglie il blocco input sentence se viene selezionato il mode 2
-        function toggleInputSentence() {
-            const mode = document.getElementById('mode').value;
-            const inputsentenceGroup = document.getElementById('inputSentenceGroup');
-            const sentenceGroup = document.getElementById('totalSentencesGroup');
-            const pastGroup = document.getElementById('pastSentencesGroup');
-            const presentGroup = document.getElementById('presentSentencesGroup');
-            const futureGroup = document.getElementById('futureSentencesGroup');
-            const generateButton = document.getElementById('generateButton');
-            const semanticTree = document.getElementById('semanticTreeButton');
+    <div class="form-group" id="inputSentenceGroup">
+        <label>Input Sentence:</label>
+        <label for="inputSentence"></label><input type="text" name="inputSentence" id="inputSentence">
+    </div>
 
-            if (mode === '1') {
-                inputsentenceGroup.style.display = 'block';
-                sentenceGroup.style.display = 'block';
-                pastGroup.style.display = 'block';
-                presentGroup.style.display = 'block';
-                futureGroup.style.display = 'block';
-                generateButton.style.display = 'block';
-                semanticTree.style.display = 'none';
+    <div class="form-group" id="totalSentencesGroup">
+        <label>Total Sentences (max 20):</label>
+        <label for="totalSentences"></label><input type="number" name="totalSentences" id="totalSentences" min="1" max="20" required onchange="updateRemainingCount()">
+    </div>
 
-            } else if (mode === '2') { // Mode 2
-                inputsentenceGroup.style.display = 'none';
-                sentenceGroup.style.display = 'block';
-                pastGroup.style.display = 'block';
-                presentGroup.style.display = 'block';
-                futureGroup.style.display = 'block';
-                generateButton.style.display = 'block';
-                semanticTree.style.display = 'none';
-            } else {
-                inputsentenceGroup.style.display = 'block';
-                sentenceGroup.style.display = 'none';
-                pastGroup.style.display = 'none';
-                presentGroup.style.display = 'none';
-                futureGroup.style.display = 'none';
-                generateButton.style.display = 'none';
-                semanticTree.style.display = 'block';
+    <div class="form-group" id="pastSentencesGroup">
+        <label>Past Tense Sentences:</label>
+        <label for="pastSentences"></label><input type="number" name="pastSentences" id="pastSentences" min="0" required onchange="validateTotalCount()">
+    </div>
 
-            }
+    <div class="form-group" id="presentSentencesGroup">
+        <label>Present Tense Sentences:</label>
+        <label for="presentSentences"></label><input type="number" name="presentSentences" id="presentSentences" min="0" required onchange="validateTotalCount()">
+    </div>
+
+    <div class="form-group" id="futureSentencesGroup">
+        <label>Future Tense Sentences:</label>
+        <label for="futureSentences"></label><input type="number" name="futureSentences" id="futureSentences" min="0" required onchange="validateTotalCount()">
+    </div>
+
+    <button type="submit" id="generateButton" onclick="generateSentences(event)">Generate Sentences</button>
+    <button type="submit" id="semanticTreeButton" onclick="semanticTree(event)" style="display: none;">Semantic Tree</button>
+</form>
+
+<div id="loading" class="loading">
+    We are generating your sentences... Please wait... -_-
+</div>
+
+<div id="error" class="error" style="display: none;"></div>
+<div id="results"></div>
+
+<script>
+    //Toglie il blocco input sentence se viene selezionato il mode 2
+    function toggleInputSentence() {
+        const mode = document.getElementById('mode').value;
+        const inputsentenceGroup = document.getElementById('inputSentenceGroup');
+        const sentenceGroup = document.getElementById('totalSentencesGroup');
+        const pastGroup = document.getElementById('pastSentencesGroup');
+        const presentGroup = document.getElementById('presentSentencesGroup');
+        const futureGroup = document.getElementById('futureSentencesGroup');
+        const generateButton = document.getElementById('generateButton');
+        const semanticTree = document.getElementById('semanticTreeButton');
+
+        if (mode === '1') {
+            inputsentenceGroup.style.display = 'block';
+            sentenceGroup.style.display = 'block';
+            pastGroup.style.display = 'block';
+            presentGroup.style.display = 'block';
+            futureGroup.style.display = 'block';
+            generateButton.style.display = 'block';
+            semanticTree.style.display = 'none';
+
+        } else if (mode === '2') { // Mode 2
+            inputsentenceGroup.style.display = 'none';
+            sentenceGroup.style.display = 'block';
+            pastGroup.style.display = 'block';
+            presentGroup.style.display = 'block';
+            futureGroup.style.display = 'block';
+            generateButton.style.display = 'block';
+            semanticTree.style.display = 'none';
+        } else {
+            inputsentenceGroup.style.display = 'block';
+            sentenceGroup.style.display = 'none';
+            pastGroup.style.display = 'none';
+            presentGroup.style.display = 'none';
+            futureGroup.style.display = 'none';
+            generateButton.style.display = 'none';
+            semanticTree.style.display = 'block';
 
         }
 
-        //Aggiorna il valore del campo total sentences se viene modificato il valore di past, present e future
-        function updateRemainingCount() {
-            const total = parseInt(document.getElementById('totalSentences').value) || 0;
-            if (total > 20) {
-                alert('Maximum 20 sentences allowed');
-                document.getElementById('totalSentences').value = 20;
-            }
+    }
+
+    //Aggiorna il valore del campo total sentences se viene modificato il valore di past, present e future
+    function updateRemainingCount() {
+        const total = parseInt(document.getElementById('totalSentences').value) || 0;
+        if (total > 20) {
+            alert('Maximum 20 sentences allowed');
+            document.getElementById('totalSentences').value = 20;
         }
+    }
 
-        //Controlla che il num delle frasi non superi il totale
-        function validateTotalCount() {
-            const total = parseInt(document.getElementById('totalSentences').value) || 0;
-            const past = parseInt(document.getElementById('pastSentences').value) || 0;
-            const present = parseInt(document.getElementById('presentSentences').value) || 0;
-            const future = parseInt(document.getElementById('futureSentences').value) || 0;
+    //Controlla che il num delle frasi non superi il totale
+    function validateTotalCount() {
+        const total = parseInt(document.getElementById('totalSentences').value) || 0;
+        const past = parseInt(document.getElementById('pastSentences').value) || 0;
+        const present = parseInt(document.getElementById('presentSentences').value) || 0;
+        const future = parseInt(document.getElementById('futureSentences').value) || 0;
 
-            const sum = past + present + future;
-            if (sum > total) {
-                alert(`Total of tense-specific sentences (${sum}) cannot exceed total sentences (${total})`);
-            }
+        const sum = past + present + future;
+        if (sum > total) {
+            alert(`Total of tense-specific sentences (${sum}) cannot exceed total sentences (${total})`);
         }
+    }
 
 
-        async function semanticTree(event) {
-            event.preventDefault();
+    async function semanticTree(event) {
+        event.preventDefault();
 
-            const form = document.getElementById('generatorForm');
-            const loading = document.getElementById('loading');
-            const error = document.getElementById('error');
-            const results = document.getElementById('results');
-            const semanticTree = document.getElementById('semanticTreeButton');
+        const form = document.getElementById('generatorForm');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const results = document.getElementById('results');
+        const semanticTree = document.getElementById('semanticTreeButton');
 
-            //Resetta lo stato del form
-            loading.style.display = 'block';
-            error.style.display = 'none';
-            results.innerHTML = '';
+        //Resetta lo stato del form
+        loading.style.display = 'block';
+        error.style.display = 'none';
+        results.innerHTML = '';
 
-            try {
-                const response = await fetch('/Tree', {
-                    method: 'POST',
-                    body: new FormData(form)
-                });
+        try {
+            const response = await fetch('/Tree', {
+                method: 'POST',
+                body: new FormData(form)
+            });
 
-                console.log(typeof semanticTree);
+            console.log(typeof semanticTree);
 
 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(errorText || `[Error]: HTTP error! status: ${response.status}`);
-                }
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || `[Error]: HTTP error! status: ${response.status}`);
+            }
 
-                const data = await response.json();
-                if (!data) {
-                    throw new Error('[Error]: No data received from server');
-                }
+            const data = await response.json();
+            if (!data) {
+                throw new Error('[Error]: No data received from server');
+            }
 
-                results.innerHTML = `
+            results.innerHTML = `
                     <div class="semanticTreeGroup">
                     <h2>Semantic Tree:</h2>
                     <p>${data.semanticTree}</p>
                 </div>
                 `;
-            } catch (err) {
-                error.textContent = '[Error]:  ' + (err.message || 'Unknown error occurred');
-                error.style.display = 'block';
-            } finally {
-                loading.style.display = 'none';
-            }
+        } catch (err) {
+            error.textContent = '[Error]:  ' + (err.message || 'Unknown error occurred');
+            error.style.display = 'block';
+        } finally {
+            loading.style.display = 'none';
         }
+    }
 
-        //Genera le frasi
-        async function generateSentences(event) {
-            event.preventDefault();
+    //Genera le frasi
+    async function generateSentences(event) {
+        event.preventDefault();
 
-            const form = document.getElementById('generatorForm');
-            const loading = document.getElementById('loading');
-            const error = document.getElementById('error');
-            const results = document.getElementById('results');
+        const form = document.getElementById('generatorForm');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const results = document.getElementById('results');
 
-            //Resetta lo stato del form
-            loading.style.display = 'block';
-            error.style.display = 'none';
-            results.innerHTML = '';
+        //Resetta lo stato del form
+        loading.style.display = 'block';
+        error.style.display = 'none';
+        results.innerHTML = '';
 
-            try {
-                const response = await fetch('/generate', {
-                    method: 'POST',
-                    body: new FormData(form)
-                });
+        try {
+            const response = await fetch('/generate', {
+                method: 'POST',
+                body: new FormData(form)
+            });
 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(errorText || `[Error]: HTTP error! status: ${response.status}`);
-                }
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || `[Error]: HTTP error! status: ${response.status}`);
+            }
 
-                const data = await response.json();
-                if (!data) {
-                    throw new Error('[Error]: No data received from server');
-                }
+            const data = await response.json();
+            if (!data) {
+                throw new Error('[Error]: No data received from server');
+            }
 
-                results.innerHTML = `
+            results.innerHTML = `
                     ${renderSentenceGroup('Past Tense Sentences', data.pastSentences)}
                     ${renderSentenceGroup('Present Tense Sentences', data.presentSentences)}
                     ${renderSentenceGroup('Future Tense Sentences', data.futureSentences)}
                 `;
-            } catch (err) {
-                error.textContent = '[Error]:  ' + (err.message || 'Unknown error occurred');
-                error.style.display = 'block';
-            } finally {
-                loading.style.display = 'none';
-            }
+        } catch (err) {
+            error.textContent = '[Error]:  ' + (err.message || 'Unknown error occurred');
+            error.style.display = 'block';
+        } finally {
+            loading.style.display = 'none';
         }
+    }
 
-        //Formatta il blocco di frasi
-        function renderSentenceGroup(title, sentences) {
-            if (!sentences || sentences.length === 0) return '';
+    //Formatta il blocco di frasi
+    function renderSentenceGroup(title, sentences) {
+        if (!sentences || sentences.length === 0) return '';
 
-            return `
+        return `
                 <div class="sentence-group">
                     <h2>${title}</h2>
                     ${sentences.map((sentence, index) => `
@@ -288,9 +324,9 @@
                     `).join('')}
                 </div>
             `;
-        }
-        // Inizializza lo stato del form
-        toggleInputSentence();
-    </script>
+    }
+    // Inizializza lo stato del form
+    toggleInputSentence();
+</script>
 </body>
 </html>
