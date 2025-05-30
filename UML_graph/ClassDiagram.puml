@@ -1,0 +1,138 @@
+@startuml
+
+!include Graphic.puml
+
+package NoSenGen {
+    package generator {
+        class Generator {
+            - List<MyNoun> nounList
+            - List<MyAdjective> adjList
+            - List<MyVerb> verbList
+            - List<MyVerb> verbList_nothirdperson
+            - List<MyVerb> verbList_past
+            - boolean firstSentence
+            + Generator()
+            + String genSentence(String sentenceIn, int tense)
+            - void analyzeSentence(String sentenceIn)
+            - static <T> void fillList(List<T> list, int targetSize, Supplier<T> sup)
+            + static <T> void stampaLista(List<T> lista)
+        }
+    }
+
+    package myDictionary {
+        class Token {
+            - String token
+            + Token()
+            + Token(String s)
+            + String getToken()
+            + void setToken(String t)
+            + String toString()
+        }
+
+        class MyNoun {
+            + MyNoun(String n)
+            + String getMyNoun()
+            + void setMyNoun(String n)
+        }
+
+        class MyAdjective {
+            + MyAdjective(String a)
+            + String getAdj()
+            + void setAdj(String n)
+        }
+
+        class MyVerb {
+            + MyVerb(String v)
+            + String getMyVerb()
+            + void setMyVerb(String n)
+        }
+
+        class MyDictionary {
+            - List<MyNoun> nouns
+            - List<MyVerb> verbs
+            - List<MyVerb> verbs_nothirdperson
+            - List<MyVerb> verbs_past
+            - List<MyAdjective> adjs
+            + MyDictionary()
+            + MyNoun getNoun()
+            + MyVerb getVerb()
+            + MyVerb getVerb_nothirdperson()
+            + MyVerb getVerb_past()
+            + MyAdjective getAdj()
+            - <T> T chooseToken(List<T> l)
+        }
+    }
+
+    package template {
+        class Template {
+            - String template
+            - int nounsNumber
+            - int verbsNumber
+            - int adjNumber
+            - int sentenceNumber
+            - boolean nothirdperson
+            - List<String> nothirdpersontoken
+            + Template(String t)
+            + String FillTemplate(List<MyNoun>, List<MyVerb>, List<MyVerb>, List<MyAdjective>)
+            + String FillTemplate_past(List<MyNoun>, List<MyVerb>, List<MyAdjective>)
+            + String FillTemplate_future(List<MyNoun>, List<MyVerb>, List<MyAdjective>)
+            + String getTemplate()
+            + int getMissingVerbs()
+            + int getMissingNouns()
+            + int getMissingAdjectives()
+            - int CountTokens(String target, String sentence)
+            - boolean containsExactPhrase(String text, String phrase)
+        }
+
+        class TemplatesLibrary {
+            - static ArrayList<Template> templates
+            - static ArrayList<Template> TemplateAdder(String filenoun)
+            + static Template RandomTemplatePicker()
+            + static Template RandomTemplatePicker_nosentence()
+            {static}
+        }
+    }
+
+    package api {
+        class GoogleLanguageAPI
+        class GoogleToxicityAPI
+    }
+
+    package controller {
+        class GeneratorController {
+            - Generator generator
+            + GeneratorController(Generator generator)
+            + String showHomePage(Model model)
+            + GeneratorResponse generateSentences(String inputSentence, int mode, int totalSentences, int pastSentences, int presentSentences, int futureSentences)
+            + ResponseEntity<Map<String, String>> semanticTree(String inputSentence)
+
+            class GeneratorResponse {
+                - List<String> pastSentences
+                - List<String> presentSentences
+                - List<String> futureSentences
+                + List<String> getPastSentences()
+                + List<String> getPresentSentences()
+                + List<String> getFutureSentences()
+            }
+        }
+    }
+
+    class Application {
+        + static void main(String[] args)
+    }
+
+    Application --> controller.GeneratorController
+    generator.Generator --> myDictionary.MyDictionary
+    generator.Generator --> template.Template
+    myDictionary.MyNoun --|> myDictionary.Token
+    myDictionary.MyAdjective --|> myDictionary.Token
+    myDictionary.MyVerb --|> myDictionary.Token
+    template.Template --> myDictionary.MyNoun
+    template.Template --> myDictionary.MyVerb
+    template.Template --> myDictionary.MyAdjective
+    template.TemplatesLibrary --> template.Template
+    controller.GeneratorController --> generator.Generator
+    controller.GeneratorController --> api.GoogleLanguageAPI
+}
+
+@enduml
