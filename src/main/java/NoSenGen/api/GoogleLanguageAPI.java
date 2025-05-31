@@ -94,7 +94,7 @@ public class GoogleLanguageAPI {
     //Metodo per chiamare l'API
     private static String CallAPI(String sentence) throws Exception{
         //API Key
-        String apiKey = "AIzaSyCnUvmTiz84QCIpInKTtlufK7TXMzL2rZg"; //"CHIAVE API DA INSERIRE";
+        String apiKey = //"CHIAVE API DA INSERIRE";
 
         //Endpoint dell'API
         String url = "https://language.googleapis.com/v1/documents:analyzeSyntax?key=" + apiKey;
