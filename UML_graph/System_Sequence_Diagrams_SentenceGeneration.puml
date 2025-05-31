@@ -1,0 +1,52 @@
+@startuml System_Sequence_Diagrams_SentenceGeneration
+
+!include Graphic.puml
+
+actor User
+participant "Frontend (Browser)" as FE
+participant "GeneratorController" as Controller
+participant "Generator" as Generator
+participant "TemplatesLibrary" as TemplatesLibrary
+participant "ApiGoogleAnalizer" as analize
+participant "MyDictionary" as Dictionary
+participant "Template" as Template
+participant "ApiGoogleToxicity" as Moderator
+
+== Generation Request ==
+
+User -> FE: Enter ApiKey
+User -> FE : Enter sentence (optional) and select parameters
+FE -> Controller : POST /generate(inputSentence, tense, mode...)
+Controller -> Generator : genSentence(sentence, tense, apiKey)
+
+== Loading template ==
+
+Generator -> TemplatesLibrary : RandomTemplatePicker()
+TemplatesLibrary --> Generator : Template
+
+== Preparing tokens and filling template ==
+Generator -> analize: LanguageApi(sentence, apiKey)
+analize --> Generator: Save tokens in lists
+
+loop for each requested token type
+    Generator -> Dictionary : getNoun() / getVerb() / getVerb_nothirdperson() / getAdj()
+    Dictionary --> Generator : Token add to lists
+end
+
+Generator -> Template : FillTemplate(...) (or FillTemplate_past / future)
+Template --> Generator : generated sentence
+
+== Toxicity check ==
+
+Generator -> Moderator : checkToxicity(sentence)
+Moderator --> Generator : true / false
+
+alt excessive toxicity
+    Generator -> Generator : regenerate sentence
+end
+
+Generator --> Controller : generated sentence (or error message)
+Controller --> FE : JSON with result
+FE --> User : Display sentence
+
+@enduml
