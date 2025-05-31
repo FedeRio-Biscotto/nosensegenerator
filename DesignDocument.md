@@ -552,7 +552,6 @@ package NoSenGen {
 }
 
 @enduml
-
 ```
 ## 6. Internal Sequence Diagrams
 

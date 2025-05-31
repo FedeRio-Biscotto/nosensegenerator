@@ -19,6 +19,7 @@ package NoSenGen {
         }
     }
 
+
     package myDictionary {
         class Token {
             - String token
