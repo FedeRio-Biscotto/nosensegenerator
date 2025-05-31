@@ -1,0 +1,5 @@
+mouse
+computer
+phone
+lamp
+wallet
