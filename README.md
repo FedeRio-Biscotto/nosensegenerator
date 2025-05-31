@@ -46,6 +46,7 @@ To run this project, you will need:
 - Internet connection (for dependency resolution)  
 - Operating system: Linux / Windows / macOS  
 - Git (to clone the repository)
+- A valid Google Cloud API Key
 
 ### Installation Steps 
 Check if Maven is installed (optional)
@@ -66,27 +67,12 @@ To compile the project, run:
   mvn compile
   ```
 ### Running the Application
-#### 1. From the Command Line
+#### From the Command Line
 You can start the Spring Boot application directly with:
 ```bash
 mvn spring-boot:run
 ```
 This will automatically start the embedded application server (e.g., Tomcat).
-
-#### 2. Build and Run the Executable JAR
-To build and run the executable JAR file:
-
-  ```bash
-  mvn package
-  ```
-The JAR file will be located in the `target` directory. 
-Run it using:
-  ```bash
-  mvn java -jar target/NoSenseGenerator-1.0-SNAPSHOT.jar
-
-  ```
-
-
 
 ---
 
