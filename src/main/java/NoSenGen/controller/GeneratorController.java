@@ -21,13 +21,8 @@ public class GeneratorController {
     //Variabili
     private final Generator generator;
     private String savedApiKey;
-    private static boolean error;
-    private static String message;
-
-
 
     public GeneratorController(Generator generator) {
-
         this.generator = generator;
     }
 
@@ -145,14 +140,5 @@ public class GeneratorController {
         public List<String> getPresentSentences() { return presentSentences; }
         public List<String> getFutureSentences() { return futureSentences; }
 
-        // Setta se c'è un errore
-        public void setError(boolean b) {
-            error = b;
-        }
-
-        // Setta i messaggi di uscita
-        public void setMessage(String s) {
-            message = s;
-        }
     }
 }

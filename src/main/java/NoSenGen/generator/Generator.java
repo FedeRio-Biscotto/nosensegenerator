@@ -6,13 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
-//Import di pacchetti di classi nostre
 import org.springframework.stereotype.Component;
+//Import di pacchetti di classi nostre
 import NoSenGen.myDictionary.*;
-
 import NoSenGen.api.*;
 import NoSenGen.template.*;
-import org.springframework.stereotype.Service;
 
 @Component
 public class Generator {
@@ -25,7 +23,7 @@ public class Generator {
      * analizza la sentenceIn e aggiorna le liste con i token
      * che verranno usati per ogni frase
      * @param sentenceIn la frase da cui vengono estratti i token
-     * 
+     *
      */
     private void analyzeSentence(String sentenceIn, String apiKey) {
         try {
@@ -34,14 +32,14 @@ public class Generator {
             // Gestione dell'eccezione
             System.out.println("[Error]: " + e.getMessage());
         }
-        
+
         nounList.addAll(GoogleLanguageAPI.getNouns());
         adjList.addAll(GoogleLanguageAPI.getAdj());
         verbList_nothirdperson.addAll(GoogleLanguageAPI.getVerbs());
         verbList.addAll(GoogleLanguageAPI.getVerbs_thirdperson());
         verbList_past.addAll(GoogleLanguageAPI.getVerbs_past());
     }
-    
+
     /**
      * usa i token della sentenceIn per generare una frase nosense con quei token
      * ed eventualmente altri scelti random
@@ -49,10 +47,10 @@ public class Generator {
      * @param tense il tempo verbale della frase da comporre (passato, pres, fut)
      * @return la frase nosense generata
      * @throws IOException
-    */
+     */
     public String genSentence(String sentenceIn, int tense, String apiKey) throws IOException {
         // Variabili del metodo
-        MyDictionary dict = new MyDictionary();
+        MyDictionary dict = new MyDictionary("main");
         List<MyNoun> nounTemp=new ArrayList<>();
         List<MyVerb> verbTemp=new ArrayList<>();
         List<MyVerb> verbTemp_nothirdperson = new ArrayList<>();
@@ -76,7 +74,7 @@ public class Generator {
         verbTemp_nothirdperson.addAll(verbList_nothirdperson);
         verbTemp_past.addAll(verbList_past);
         adjTemp.addAll(adjList);
-       
+
 
         // riempio le liste temporanee con i token mancanti
         fillList(nounTemp, template.getMissingNouns(), dict::getNoun);
@@ -109,20 +107,20 @@ public class Generator {
 
 
         try {
-        if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut, apiKey)){
-            //Pulisco le liste dei token
-            nounList.clear();
-            verbList.clear();
-            adjList.clear();
-            verbList_nothirdperson.clear();
-            verbList_past.clear();
+            if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut, apiKey)){
+                //Pulisco le liste dei token
+                nounList.clear();
+                verbList.clear();
+                adjList.clear();
+                verbList_nothirdperson.clear();
+                verbList_past.clear();
 
-            //La frase è troppo tossica, riprovo con un'altra frase
-            sentenceOut = "Toxic Phrase | New Phrase: " + genSentence("", tense, apiKey);
-        }
+                //La frase è troppo tossica, riprovo con un'altra frase
+                sentenceOut = "Toxic Phrase | New Phrase: " + genSentence("", tense, apiKey);
+            }
         }catch(Exception e){
-        //Gestione di eventuali eccezioni dell'API
-        return "[Error]: " + e.getMessage();
+            //Gestione di eventuali eccezioni dell'API
+            return "[Error]: " + e.getMessage();
         }
 
         // ----------------------------------------------------- (4) RISULTATO
@@ -145,18 +143,6 @@ public class Generator {
             list.add(sup.get());
         }
     }
-
-    /**
-     * metodo di debug da cancellare prima di consegnare il progetto
-     * @param <T>
-     * @param lista
-     */
-    public static <T> void stampaLista(List<T> lista) {
-        for (T elemento : lista) {
-            System.out.println(elemento);
-        }
-    }
-
     // Varibabili
 
     //liste di tokens: salvano i token immessi dall'utente
@@ -165,7 +151,7 @@ public class Generator {
     private List<MyVerb> verbList = new ArrayList<>();
     private List<MyVerb> verbList_nothirdperson = new ArrayList<>();
     private List<MyVerb> verbList_past = new ArrayList<>();
-    
+
     // true <=> è la prima sentence che il generator produce
     private boolean firstSentence;
 

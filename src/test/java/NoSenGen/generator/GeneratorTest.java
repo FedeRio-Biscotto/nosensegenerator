@@ -2,18 +2,12 @@ package NoSenGen.generator;
 
 import org.junit.jupiter.api.Test;
 
-public class GeneratorTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+class GeneratorTest {
+
     @Test
     void genSentence() {
-
-
-
-
-    }
-
-    @Test
-    void stampaLista() {
-
 
 
 
