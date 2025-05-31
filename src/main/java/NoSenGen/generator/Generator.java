@@ -17,8 +17,6 @@ public class Generator {
     public Generator() {
         firstSentence = true;
     }
-
-
     /**
      * analizza la sentenceIn e aggiorna le liste con i token
      * che verranno usati per ogni frase
@@ -32,14 +30,12 @@ public class Generator {
             // Gestione dell'eccezione
             System.out.println("[Error]: " + e.getMessage());
         }
-
         nounList.addAll(GoogleLanguageAPI.getNouns());
         adjList.addAll(GoogleLanguageAPI.getAdj());
         verbList_nothirdperson.addAll(GoogleLanguageAPI.getVerbs());
         verbList.addAll(GoogleLanguageAPI.getVerbs_thirdperson());
         verbList_past.addAll(GoogleLanguageAPI.getVerbs_past());
     }
-
     /**
      * usa i token della sentenceIn per generare una frase nosense con quei token
      * ed eventualmente altri scelti random
@@ -49,6 +45,7 @@ public class Generator {
      * @throws IOException
      */
     public String genSentence(String sentenceIn, int tense, String apiKey) throws IOException {
+
         // Variabili del metodo
         MyDictionary dict = new MyDictionary("main");
         List<MyNoun> nounTemp=new ArrayList<>();
@@ -56,18 +53,15 @@ public class Generator {
         List<MyVerb> verbTemp_nothirdperson = new ArrayList<>();
         List<MyVerb> verbTemp_past = new ArrayList<>();
         List<MyAdjective> adjTemp = new ArrayList<>();
-        String sentenceOut = "";
+        String sentenceOut;
         Template template = TemplatesLibrary.RandomTemplatePicker();
         // ----------------------------------------------------- (1) COLLEGAMENTO API E ANALISI FRASE -----------------------------------------------------\\
-
         //analizzo la frase con API solo alla prima richiesta di generare una sentence
         if(firstSentence){
             analyzeSentence(sentenceIn, apiKey);
             firstSentence=false;
         }
-
         // ----------------------------------------------------- (2) COSTRUISCI LA FRASE RANDOM -----------------------------------------------------\\
-
         //aggiorno le liste temporanee con i token immessi dall'utente
         nounTemp.addAll(nounList);
         verbTemp.addAll(verbList);
@@ -104,7 +98,6 @@ public class Generator {
         }
 
         // ----------------------------------------------------- (3) CONTROLLA LA TOSSICITA' -----------------------------------------------------\\
-
 
         try {
             if(!GoogleToxicityAPI.isToxicityAcceptable(sentenceOut, apiKey)){

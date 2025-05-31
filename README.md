@@ -56,14 +56,14 @@ Check if Maven is installed (optional)
 Clone the repository and build the project
 ```bash
 git clone https://github.com/FedeRio-Biscotto/nosensegenerator.git
-cd nosensegenerator
+go to the directory of /nosensegenerator
 mvn clean install
 ```
 
 #### Build the Project
 To compile the project, run:
   ```bash
-  mvn complie
+  mvn compile
   ```
 ### Running the Application
 #### 1. From the Command Line

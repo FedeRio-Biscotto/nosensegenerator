@@ -20,7 +20,6 @@ class MyDictionaryTest {
 
         MyNoun noun=dict.getNoun();
         assertNotNull(noun);
-
     }
 
     @Test

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
-@Component
 public class MyDictionary {
 
     //-------COSTRUTTORE DI DEFAULT (con tutti i token)-----//------//
@@ -20,9 +19,8 @@ public class MyDictionary {
         verbs_nothirdperson=setList(path+"Verbs.txt", MyVerb::new);
         verbs_past=setList(path+"Verbs_past.txt", MyVerb::new);
         adjs=setList(path+"Adjs.txt", MyAdjective::new);
-
     }
- 
+    
     //Legge il file riga per riga e trasforma ogni riga in un oggetto di tipo "T"
     // usando una funzione 'creator' e restituisce la lista di oggetti
     private static <T> List<T> setList(String fileName, Function<String, T> creator) throws IOException{

@@ -48,19 +48,4 @@ public class TemplatesLibrary{
         return templates.get(result);
 
     }
-
-    //Metodo RandomPicker di template senza (sentence), questo per evitare che escano frasi troppo lunghe
-    public static Template RandomTemplatePicker_nosentence(){
-        //Variabili
-        int result = 0;
-        int max = 10;
-
-        //Creo un numero randoom
-        SecureRandom rand = new SecureRandom();
-        result = 0;
-
-        result = rand.nextInt(max);
-
-        return templates.get(result);
-    }
 }

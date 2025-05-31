@@ -81,7 +81,7 @@ public class Template {
         } 
         //Sostituisce i verbi
         for (int i = 0; i < verbsNumber; i++){
-            if (nothirdperson == true){
+            if (nothirdperson){
                 tem = tem.replaceFirst("\\(verb\\)", verbs_nothirdperson.get(i).toString()); 
                 nothirdperson = false;
             }
