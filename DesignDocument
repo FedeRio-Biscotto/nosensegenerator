@@ -1,0 +1,71 @@
+# Documento di Design - Nosense Generator
+
+## 1. Introduzione
+
+### Scopo del progetto
+Il sistema "Nosense Generator" ha l'obiettivo di analizzare e generare frasi nonsenso in italiano e inglese. Include funzionalità di analisi sintattica via API Google NLP, generazione di frasi a partire da template e dizionari di parole, oltre alla possibilità di espandere e gestire strutture linguistiche.
+
+### Ambito
+L'applicazione è scritta in Java, modulare, e utilizza API esterne e file di risorse per creare frasi divertenti e nonsenso.
+
+---
+
+## 2. Modello di dominio
+
+### Entità principali
+- **Word**: rappresenta una parola, con tipo (Noun, Verb, Adjective)
+- **Sentence**: frase composta da più parole, analizzabile e generabile
+- **Template**: modello di frase con placeholder come [NOUN], [VERB]
+- **Dictionary**: raccolta di parole per ciascun tipo, caricata da file
+
+### Relazioni
+- Una **Sentence** contiene più **Word**
+- Un **Template** utilizza **Word** per riempire i placeholder
+- Un **Dictionary** fornisce le parole casuali per la generazione
+
+---
+
+## 3. Diagrammi di sequenza
+
+### Analisi di una frase
+1. Utente inserisce la frase
+2. Sistema invia la frase all’API Google NLP
+3. Riceve l’analisi sintattica
+4. Mostra i risultati all’utente
+
+### Generazione di una frase
+1. Utente seleziona un template
+2. Sistema estrae parole casuali dai dizionari
+3. Compone la frase e la visualizza
+
+*(Sono a disposizione i diagrammi UML dettagliati in strumenti come PlantUML)*
+
+---
+
+## 4. Design delle classi principali
+
+```java  
+// Classe Word  
+public class Word {  
+    String text;  
+    WordType type; // Enum: NOUN, VERB, ADJECTIVE  
+}  
+
+// Classe Sentence  
+public class Sentence {  
+    List<Word> words;  
+    String generateSentence();  
+}  
+
+// Classe Template  
+public class Template {  
+    String pattern; // e.g., "[NOUN] [VERB] the [ADJECTIVE] [NOUN]"  
+    List<Word> fillWords();  
+}  
+
+// Classe Dictionary  
+public class Dictionary {  
+    Map<WordType, List<String>> wordsByType;  
+    void loadFromFile(String filename);  
+    String getRandomWord(WordType type);  
+}
