@@ -34,15 +34,15 @@ class MyDictionaryTest {
     }
 
     @Test
-    void getVerb_nothirdperson() {
-        MyVerb verb=dict.getVerb_nothirdperson();
+    void getVerbNothirdPerson() {
+        MyVerb verb=dict.getVerbNothirdPerson();
         assertNotNull(verb);
 
     }
 
     @Test
-    void getVerb_past() {
-        MyVerb verb=dict.getVerb_past();
+    void getVerbPast() {
+        MyVerb verb=dict.getVerbPast();
         assertNotNull(verb);
     }
 }

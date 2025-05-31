@@ -30,11 +30,11 @@ public class Main {
                     Desktop.getDesktop().browse(new URI("http://localhost:8080")); // Apre il browser all'indirizzo specifico
                 } else {
                     //Messaggio in caso non sia possibile aprire automaticamente il browser
-                    System.out.println("[System]: Welcome to NoSenseGenerator! :D \n [System]: Please open http://localhost:8080 in your web browser");
+                    System.out.println(" [System]: Welcome to NoSenseGenerator! :D \n [System]: Please open http://localhost:8080 in your web browser");
                 }
             } catch (Exception e) {
                 //Messaggio di fallback in caso di errore
-                System.out.println("[System]: Welcome to NoSenseGenerator! :D \n [System]: Please open http://localhost:8080 in your web browser");
+                System.out.println(" [System]: Welcome to NoSenseGenerator! :D \n [System]: Please open http://localhost:8080 in your web browser");
             }
         };
     }

@@ -25,7 +25,7 @@ public class Generator {
      */
     private void analyzeSentence(String sentenceIn, String apiKey) {
         try {
-            GoogleLanguageAPI.LanguageApi(sentenceIn, apiKey);
+            GoogleLanguageAPI.languageApi(sentenceIn, apiKey);
         } catch (Exception e) {
             // Gestione dell'eccezione
             System.out.println("[Error]: " + e.getMessage());
@@ -54,7 +54,7 @@ public class Generator {
         List<MyVerb> verbTemp_past = new ArrayList<>();
         List<MyAdjective> adjTemp = new ArrayList<>();
         String sentenceOut;
-        Template template = TemplatesLibrary.RandomTemplatePicker();
+        Template template = TemplatesLibrary.randomTemplatePicker();
         // ----------------------------------------------------- (1) COLLEGAMENTO API E ANALISI FRASE -----------------------------------------------------\\
         //analizzo la frase con API solo alla prima richiesta di generare una sentence
         if(firstSentence){
@@ -73,8 +73,8 @@ public class Generator {
         // riempio le liste temporanee con i token mancanti
         fillList(nounTemp, template.getMissingNouns(), dict::getNoun);
         fillList(verbTemp, template.getMissingVerbs(), dict::getVerb);
-        fillList(verbTemp_nothirdperson, template.getMissingVerbs(), dict::getVerb_nothirdperson);
-        fillList(verbTemp_past, template.getMissingVerbs(), dict::getVerb_past);
+        fillList(verbTemp_nothirdperson, template.getMissingVerbs(), dict::getVerbNothirdPerson);
+        fillList(verbTemp_past, template.getMissingVerbs(), dict::getVerbPast);
         fillList(adjTemp, template.getMissingAdjectives(), dict::getAdj);
 
         //mescolo le liste

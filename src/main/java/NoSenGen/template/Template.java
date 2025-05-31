@@ -1,10 +1,8 @@
 //Package
 package NoSenGen.template;
 //Import
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.jar.Attributes.Name;
 import java.util.regex.*;
 //Import dei nostri pacchetti
 import NoSenGen.myDictionary.*;
@@ -16,6 +14,9 @@ public class Template {
     private boolean nothirdperson = false;
     private List<String> nothirdpersontoken = Arrays.asList("I", "you", "we", "they");
 
+
+
+
     //--------------------------------COSTRUTTORE--------------------------------//
     public Template(String t){
         template=t;
@@ -23,7 +24,7 @@ public class Template {
         //Se trova una sentence, allora va aggiunto un altro template
         sentenceNumber = CountTokens("\\(sentence\\)", template);
         if (sentenceNumber > 0){
-            template = template.replaceFirst("\\(sentence\\)", TemplatesLibrary.RandomTemplatePicker().getTemplate());  
+            template = template.replaceFirst("\\(sentence\\)", TemplatesLibrary.randomTemplatePicker().getTemplate());
         }
 
         //Conta tokens mancanti
@@ -186,22 +187,15 @@ public class Template {
     public String getTemplate(){
         return template;
     }
-
     public int getMissingVerbs(){
         return verbsNumber;
     }
-    
-
     public int getMissingNouns(){
         return nounsNumber;
     }
-
-
     public int getMissingAdjectives(){
         return adjNumber;
     }
-
-
 //--------------------------------METODI PRIVATE--------------------------------//
     private boolean containsExactPhrase(String text, String phrase) {
         return text.contains(phrase);

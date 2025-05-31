@@ -7,21 +7,20 @@ import java.security.SecureRandom;
 
 //Questa classe crea gli oggetti template
 public class TemplatesLibrary{
+
     //Variabili
     static ArrayList<Template> templates = new ArrayList<>();
 
     static {
-        templates = TemplateAdder("src/main/resources/templates.txt");
-
+        templates = templateAdder("src/main/resources/templates.txt");
         if (templates.isEmpty()) {
         System.err.println("[Error]: No templates found in templates.txt");
         }
 
-
     }
 
     //FileReader e Crea template
-    private static ArrayList<Template> TemplateAdder(String filenoun){
+    private static ArrayList<Template> templateAdder(String filenoun){
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filenoun))) {
             String riga;
@@ -38,14 +37,10 @@ public class TemplatesLibrary{
     }
 
     //Metodo RandomPicker
-    public static Template RandomTemplatePicker(){
+    public static Template randomTemplatePicker(){
         //Creo un numero randoom
         SecureRandom rand = new SecureRandom();
-        int result = 0;
-
-        result = rand.nextInt(templates.size());
-
-        return templates.get(result);
+        return templates.get(rand.nextInt(templates.size()));
 
     }
 }

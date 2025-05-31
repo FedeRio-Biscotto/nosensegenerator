@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class GoogleLanguageAPI {
+
     //Variabili
     private static ArrayList<MyNoun> nouns = new ArrayList<>();
     private static ArrayList<MyVerb> verbs = new ArrayList<>();
@@ -20,7 +21,7 @@ public class GoogleLanguageAPI {
     private static ArrayList<MyVerb> verbs_past = new ArrayList<>();
     private static ArrayList<MyAdjective> adj = new ArrayList<>();
 
-    public static void LanguageApi(String sentence, String apiKey) throws Exception {
+    public static void languageApi(String sentence, String apiKey) throws Exception {
         // Reinizializza le liste prima di ogni nuova analisi
         nouns.clear();
         verbs.clear();
@@ -29,7 +30,7 @@ public class GoogleLanguageAPI {
         adj.clear();
 
         //Parsing del JSON
-        JSONObject jsonObject = new JSONObject(CallAPI(sentence, apiKey));
+        JSONObject jsonObject = new JSONObject(callAPI(sentence, apiKey));
         JSONArray tokens = jsonObject.getJSONArray("tokens");
 
         //Estrapola i tokens
@@ -61,18 +62,17 @@ public class GoogleLanguageAPI {
             case "ADJ":
                 adj.add(new MyAdjective(word));
                 break;
+                default: break;
             }
+
         }
 
     }
 
-    public static String Semantic_Tree(String sentence, String apiKey) throws Exception{
+    public static String semanticTree(String sentence, String apiKey) throws Exception{
         //Variabili
         String s = "";
-        String response = CallAPI(sentence, apiKey);
-
-
-        //System.out.println("----Semantic Tree----");
+        String response = callAPI(sentence, apiKey);
 
         //Parsing del JSON
         JSONObject jsonObject = new JSONObject(response);
@@ -81,10 +81,7 @@ public class GoogleLanguageAPI {
         //Estrapola e salva i tokens in una stringa
         for (int i = 0; i < tokens.length(); i++) {
             JSONObject token = tokens.getJSONObject(i);
-            String word = token.getJSONObject("text").getString("content");
-            String posTag = token.getJSONObject("partOfSpeech").getString("tag");
-
-            s = s + word + " | " + posTag + "\n";
+            s = s + token.getJSONObject("text").getString("content") + " | " + token.getJSONObject("partOfSpeech").getString("tag") + "\n";
         }
 
         //Ritorna la stringa con i token
@@ -92,7 +89,7 @@ public class GoogleLanguageAPI {
     }
 
     //Metodo per chiamare l'API
-    private static String CallAPI(String sentence, String apiKey) throws Exception{
+    protected static String callAPI(String sentence, String apiKey) throws Exception{
         //API Key presa in automatico dal form html
 
         //Endpoint dell'API
@@ -126,12 +123,6 @@ public class GoogleLanguageAPI {
             System.out.println("[Details]: " + response.body());
         }
 
-        // //[DEBUG] Stampa la risposta raw
-        // //[DEBUG] Stampa la risposta raw
-        // System.out.println("Response Code: " + response.statusCode());
-        // System.out.println("Response Body: " + response.body());
-
-        //La risposta JSON dell'api la metto in una stringa
         String jsonResponse = response.body();
 
         //Return

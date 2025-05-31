@@ -1,9 +1,6 @@
 //Package
 package NoSenGen.myDictionary;
 
-//Import
-import org.springframework.stereotype.Component;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -20,7 +17,6 @@ public class MyDictionary {
         verbs_past=setList(path+"Verbs_past.txt", MyVerb::new);
         adjs=setList(path+"Adjs.txt", MyAdjective::new);
     }
-    
     //Legge il file riga per riga e trasforma ogni riga in un oggetto di tipo "T"
     // usando una funzione 'creator' e restituisce la lista di oggetti
     private static <T> List<T> setList(String fileName, Function<String, T> creator) throws IOException{
@@ -45,11 +41,11 @@ public class MyDictionary {
         return chooseToken(verbs);
     }
 
-    public MyVerb getVerb_nothirdperson(){
+    public MyVerb getVerbNothirdPerson(){
         return chooseToken(verbs_nothirdperson);
     }
 
-    public MyVerb getVerb_past(){
+    public MyVerb getVerbPast(){
         return chooseToken(verbs_past);
     }
 

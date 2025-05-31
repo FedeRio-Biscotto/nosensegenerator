@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class GeneratorTest {
 
@@ -11,8 +14,9 @@ class GeneratorTest {
     void genSentence() throws IOException {
 
         Generator gen=new Generator();
-        String apiKey= FileReader.class.getResource("src/test/resources/api_key.txt").getFile();
-        gen.genSentence("this is the test for the program",1, apiKey);
-
+     FileReader file=new FileReader("src/test/resources/ApiKeySample.txt");
+     Scanner c = new Scanner(file);
+     String apiKey=c.nextLine();
+     assertNotNull(gen.genSentence("this is the test for the Generator",1, apiKey));
     }
 }

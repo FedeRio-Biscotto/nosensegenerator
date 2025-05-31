@@ -94,7 +94,7 @@ public class GeneratorController {
             }
 
             // Ottiene l'albero semantico dall'API
-            String semanticTree = GoogleLanguageAPI.Semantic_Tree(inputSentence, savedApiKey);
+            String semanticTree = GoogleLanguageAPI.semanticTree(inputSentence, savedApiKey);
 
             // Migliora il rendering sostituendo "\n" con "<br>"
             String semanticTreeWithBr = semanticTree.replace("\n", "<br>");
