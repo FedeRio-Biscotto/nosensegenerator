@@ -1,0 +1,14 @@
+@startuml InternalRandomTemplatePicker
+!include Graphic.puml
+
+participant Generator
+participant TemplatesLibrary as tem
+
+Generator -> tem: RandomTemplatePicker()
+activate tem
+tem ->tem: create a Random Number "n"
+tem --> Generator: return Template[n]
+deactivate tem
+
+
+@enduml

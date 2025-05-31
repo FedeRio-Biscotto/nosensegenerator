@@ -1,0 +1,113 @@
+@startuml System_Sequence_Diagrams_internal_02SentenceGeneration
+
+!include Graphic.puml
+
+actor User
+participant "Frontend (Browser)" as FE
+participant "GeneratorController" as Controller
+participant "Generator" as Generator
+participant "TemplatesLibrary" as TemplatesLibrary
+participant "ApiGoogleAnalizer" as analize
+participant "MyDictionary" as Dictionary
+participant "Template" as Template
+participant "ApiGoogleToxicity" as Moderator
+
+== Generation Request ==
+
+User -> FE: Enter ApiKey
+User -> FE : Enter sentence (optional) and select parameters
+FE -> Controller : POST /generate(inputSentence, tense, mode...)
+Controller -> Generator : genSentence(sentence, tense, apiKey)
+
+== Loading template ==
+
+Generator -> TemplatesLibrary : RandomTemplatePicker()
+TemplatesLibrary -> TemplatesLibrary: create a Random Number "n"
+TemplatesLibrary --> Generator : return Template[n]
+
+== Preparing tokens and filling template ==
+Generator -> analize: LanguageApi(sentence, apiKey)
+loop foreach list
+    analize -> analize : list.clear()
+end loop
+
+analize -> analize: CallApi(sentence, ApiKey)
+analize -> analize: Save sentence tokens into lists
+analize --> Generator: return lists
+
+loop for each requested token type
+    Generator -> Dictionary : getNoun() / getVerb() / getVerb_nothirdperson() / getAdj()
+    Dictionary --> Generator : Token add to lists
+end
+
+alt present
+Generator -> Template : FillTemplate(List<MyNoun> nouns, List<MyVerb> verbs, List<MyVerb> verbs_nothirdperson, List<MyAdjective> adjectives)
+Template -> Template: check number of tokens and third person
+loop foreach (noun) in Template
+    Template ->Template: Replace (noun) with nouns.get(i).toString()
+end
+
+loop foreach (verb) in Template
+    alt nothirdperson == true
+    Template ->Template: Replace (verb) with verbs_nothirdperson.get(i).toString()
+    else nothirdperson == false
+    Template ->Template: Replace (verb) with verbs.get(i).toString()
+    end
+end
+
+loop foreach (adj) in Template
+    Template ->Template: Replace (adj) with adj.get(i).toString()
+end
+
+else past
+Generator -> Template : FillTemplate_past(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives)
+Template -> Template: check number of tokens
+
+loop foreach (noun) in Template
+    Template ->Template: Replace (noun) with nouns.get(i).toString()
+end
+
+loop foreach (verb) in Template
+    Template ->Template: Replace (verb) with verbs.get(i).toString()
+end
+
+loop foreach (adj) in Template
+    Template ->Template: Replace (adj) with adj.get(i).toString()
+end
+
+else future
+Generator -> Template : FillTemplate_past(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives)
+Template -> Template: check number of tokens
+
+loop foreach (noun) in Template
+    Template ->Template: Replace (noun) with nouns.get(i).toString()
+end
+
+loop foreach (verb) in Template
+    Template ->Template: Replace (verb) with "will" + verbs.get(i).toString()
+end
+
+loop foreach (adj) in Template
+    Template ->Template: Replace (adj) with adj.get(i).toString()
+end
+
+end
+Template --> Generator : generated sentence
+
+== Toxicity check ==
+
+Generator -> Moderator : checkToxicity(sentence)
+Moderator --> Generator : true / false
+
+alt excessive toxicity
+    loop foreach list
+        Generator -> Generator : list.clear()
+    end
+    Generator -> Generator : regenerate sentence
+end
+
+Generator --> Controller : generated sentence (or error message)
+Controller --> FE : JSON with result
+FE --> User : Display sentence
+
+@enduml

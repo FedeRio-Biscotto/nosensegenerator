@@ -1,5 +1,9 @@
 @startuml InternalFillTemplate
 
+!include Graphic.puml
+
+participant Generator
+participant Template as Templates
 
 activate Generator
 Generator -> Templates: FillTemplate(List<MyNoun> nouns, List<MyVerb> verbs, List<MyVerb> verbs_nothirdperson, List<MyAdjective> adjectives)

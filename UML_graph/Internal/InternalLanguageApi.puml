@@ -1,0 +1,17 @@
+@startuml InternalLanguageApi
+!include Graphic.puml
+
+participant Generator as gen
+participant GoogleLanguageAPI as api
+
+gen -> api: LanguageApi(sentence, ApiKey)
+
+loop foreach list
+    api -> api : list.clear()
+end loop
+
+api -> api: CallApi(sentence, ApiKey)
+api -> api: Save tokens into lists
+api --> gen: return lists with tokens of the sentence
+
+@enduml

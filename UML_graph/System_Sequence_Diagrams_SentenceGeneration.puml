@@ -12,6 +12,7 @@ participant "MyDictionary" as Dictionary
 participant "Template" as Template
 participant "ApiGoogleToxicity" as Moderator
 
+
 == Generation Request ==
 
 User -> FE: Enter ApiKey

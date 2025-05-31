@@ -1,12 +1,15 @@
-@startuml InternalFillTemplate_
+@startuml InternalFillTemplate_past
 
+!include Graphic.puml
+
+participant Generator
+participant Template as Templates
 
 activate Generator
 Generator -> Templates: FillTemplate_past(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives)
 activate Templates
 
 Templates->Templates: Check if number of tokens is correct
-Templates->Templates: Check if we need to use third or no-third person
 
 loop foreach (noun) in Template
     Templates ->Templates: Replace (noun) with nouns.get(i).toString()

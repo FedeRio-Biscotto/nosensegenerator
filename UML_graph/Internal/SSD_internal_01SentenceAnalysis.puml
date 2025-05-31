@@ -1,0 +1,22 @@
+@startuml System_Sequence_Diagrams_internal_01SentenceAnalysis
+!include Graphic.puml
+
+actor User
+participant "Frontend (Browser)" as FE
+participant "GeneratorController" as Controller
+participant "ApiGoogleAnalizer" as analize
+
+== Input sentence and analize==
+User -> FE: Insert input Sentence and apiKey
+FE -> Controller : POST /Tree(inputSentence, apiKey)
+Controller -> analize : Semantic_Tree(sentence, apiKey)
+analize -> analize: CallApi(sentence, ApiKey)
+analize -> analize: Save tokens into a String
+
+==Output==
+analize --> Controller : return Semantic Tree
+Controller --> FE : JSON with result
+FE --> User : Display Semantic Tree
+
+@enduml
+

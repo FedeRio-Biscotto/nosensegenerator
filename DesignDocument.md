@@ -553,15 +553,321 @@ package NoSenGen {
 
 @enduml
 ```
-## 6. Internal Sequence Diagrams
-
+## 6. Internal Class Diagrams
+### Google Language API
+InternalLanguageApi
 ```plantuml
+@startuml InternalLanguageApi
+'!include Graphic.puml
+
+participant Generator as gen
+participant GoogleLanguageAPI as api
+
+gen -> api: LanguageApi(sentence, ApiKey)
+
+loop foreach list
+    api -> api : list.clear()
+end loop
+
+api -> api: CallApi(sentence, ApiKey)
+api -> api: Save tokens into lists
+api --> gen: return lists with tokens of the sentence
+
+@enduml
+
+```
+InternalSemantic_Tree
+```plantuml
+@startuml InternalSemantic_Tree
+'!include Graphic.puml
+
+participant Generator as gen
+participant GoogleLanguageAPI as api
+
+gen -> api: Semantic_Tree(String sentence, String apiKey)
+
+api -> api: CallApi(sentence, ApiKey)
+api -> api: Save tokens into a String
+api --> gen: return the String
+
+@enduml
+
+```
+### Template
+InternalFillTemplate
+```plantuml
+@startuml InternalFillTemplate
+participant Generator
+participant Template as Templates
+
+'!include Graphic.puml
+
+activate Generator
+Generator -> Templates: FillTemplate(List<MyNoun> nouns, List<MyVerb> verbs, List<MyVerb> verbs_nothirdperson, List<MyAdjective> adjectives)
+activate Templates
+
+Templates->Templates: Check if number of tokens is correct
+Templates->Templates: Check if we need to use third or no-third person
+
+loop foreach (noun) in Template
+    Templates ->Templates: Replace (noun) with nouns.get(i).toString()
+end
+
+loop foreach (verb) in Template
+    alt nothirdperson == true
+    Templates ->Templates: Replace (verb) with verbs_nothirdperson.get(i).toString()
+    else nothirdperson == false
+    Templates ->Templates: Replace (verb) with verbs.get(i).toString()
+    end
+end   
+
+loop foreach (adj) in Template
+    Templates ->Templates: Replace (adj) with adj.get(i).toString()
+end   
+
+Templates --> Generator: return Sentence 
+deactivate Templates
+
+deactivate Generator
+
+@enduml
+```
+
+InternalFillTemplate_future
+```plantuml
+@startuml InternalFillTemplate_
+
+'!include Graphic.puml
+
+participant Generator
+participant Template as Templates
+
+activate Generator
+Generator -> Templates: FillTemplate_past(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives)
+activate Templates
+
+Templates->Templates: Check if number of tokens is correct
+
+loop foreach (noun) in Template
+    Templates ->Templates: Replace (noun) with nouns.get(i).toString()
+end
+
+loop foreach (verb) in Template
+    Templates ->Templates: Replace (verb) with "will" + verbs.get(i).toString()
+end   
+
+loop foreach (adj) in Template
+    Templates ->Templates: Replace (adj) with adj.get(i).toString()
+end   
+
+Templates --> Generator: return Sentence 
+deactivate Templates
+
+deactivate Generator
+
+@enduml
 
 ```
 
----
+InternalFillTemplate_past
+```plantuml
+@startuml InternalFillTemplate_
 
-## 7. Technical notes
+'!include Graphic.puml
+participant Generator
+participant Template as Templates
+
+activate Generator
+Generator -> Templates: FillTemplate_past(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives)
+activate Templates
+
+Templates->Templates: Check if number of tokens is correct
+
+loop foreach (noun) in Template
+    Templates ->Templates: Replace (noun) with nouns.get(i).toString()
+end
+
+loop foreach (verb) in Template
+    Templates ->Templates: Replace (verb) with verbs.get(i).toString()
+end   
+
+loop foreach (adj) in Template
+    Templates ->Templates: Replace (adj) with adj.get(i).toString()
+end   
+
+Templates --> Generator: return Sentence 
+deactivate Templates
+
+deactivate Generator
+
+@enduml
+
+```
+### TemplateLibrary
+InternalRandomTemplatePicker
+```plantuml
+@startuml InternalRandomTemplatePicker
+'!include Graphic.puml
+
+participant Generator
+participant TemplatesLibrary as tem
+
+Generator -> tem: RandomTemplatePicker()
+activate tem
+tem ->tem: create a Random Number "n"
+tem --> Generator: return Template[n]
+deactivate tem
+
+
+@enduml
+
+```
+---
+## 6. Internal Sequence Diagrams
+System_Sequence_Diagrams_internal_01SentenceAnalysis
+
+``` plantuml
+@startuml System_Sequence_Diagrams_internal_01SentenceAnalysis
+'!include Graphic.puml
+
+actor User
+participant "Frontend (Browser)" as FE
+participant "GeneratorController" as Controller
+participant "ApiGoogleAnalizer" as analize
+
+== Input sentence and analize==
+User -> FE: Insert input Sentence and apiKey
+FE -> Controller : POST /Tree(inputSentence, apiKey)
+Controller -> analize : Semantic_Tree(sentence, apiKey)
+analize -> analize: CallApi(sentence, ApiKey)
+analize -> analize: Save tokens into a String
+
+==Output==
+analize --> Controller : return Semantic Tree
+Controller --> FE : JSON with result
+FE --> User : Display Semantic Tree
+
+@enduml
+```
+System_Sequence_Diagrams_internal_TextAnalysis
+``` plantuml
+@startuml System_Sequence_Diagrams_internal_02SentenceGeneration
+
+'!include Graphic.puml
+
+actor User
+participant "Frontend (Browser)" as FE
+participant "GeneratorController" as Controller
+participant "Generator" as Generator
+participant "TemplatesLibrary" as TemplatesLibrary
+participant "ApiGoogleAnalizer" as analize
+participant "MyDictionary" as Dictionary
+participant "Template" as Template
+participant "ApiGoogleToxicity" as Moderator
+
+== Generation Request ==
+
+User -> FE: Enter ApiKey
+User -> FE : Enter sentence (optional) and select parameters
+FE -> Controller : POST /generate(inputSentence, tense, mode...)
+Controller -> Generator : genSentence(sentence, tense, apiKey)
+
+== Loading template ==
+
+Generator -> TemplatesLibrary : RandomTemplatePicker()
+TemplatesLibrary -> TemplatesLibrary: create a Random Number "n"
+TemplatesLibrary --> Generator : return Template[n]
+
+== Preparing tokens and filling template ==
+Generator -> analize: LanguageApi(sentence, apiKey)
+loop foreach list
+    analize -> analize : list.clear()
+end loop
+
+analize -> analize: CallApi(sentence, ApiKey)
+analize -> analize: Save sentence tokens into lists
+analize --> Generator: return lists
+
+loop for each requested token type
+    Generator -> Dictionary : getNoun() / getVerb() / getVerb_nothirdperson() / getAdj()
+    Dictionary --> Generator : Token add to lists
+end
+
+alt present
+Generator -> Template : FillTemplate(List<MyNoun> nouns, List<MyVerb> verbs, List<MyVerb> verbs_nothirdperson, List<MyAdjective> adjectives)
+Template -> Template: check number of tokens and third person
+loop foreach (noun) in Template
+    Template ->Template: Replace (noun) with nouns.get(i).toString()
+end
+
+loop foreach (verb) in Template
+    alt nothirdperson == true
+    Template ->Template: Replace (verb) with verbs_nothirdperson.get(i).toString()
+    else nothirdperson == false
+    Template ->Template: Replace (verb) with verbs.get(i).toString()
+    end
+end
+
+loop foreach (adj) in Template
+    Template ->Template: Replace (adj) with adj.get(i).toString()
+end
+
+else past
+Generator -> Template : FillTemplate_past(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives)
+Template -> Template: check number of tokens
+
+loop foreach (noun) in Template
+    Template ->Template: Replace (noun) with nouns.get(i).toString()
+end
+
+loop foreach (verb) in Template
+    Template ->Template: Replace (verb) with verbs.get(i).toString()
+end
+
+loop foreach (adj) in Template
+    Template ->Template: Replace (adj) with adj.get(i).toString()
+end
+
+else future
+Generator -> Template : FillTemplate_past(List<MyNoun> nouns, List<MyVerb> verbs, List<MyAdjective> adjectives)
+Template -> Template: check number of tokens
+
+loop foreach (noun) in Template
+    Template ->Template: Replace (noun) with nouns.get(i).toString()
+end
+
+loop foreach (verb) in Template
+    Template ->Template: Replace (verb) with "will" + verbs.get(i).toString()
+end
+
+loop foreach (adj) in Template
+    Template ->Template: Replace (adj) with adj.get(i).toString()
+end
+
+end
+Template --> Generator : generated sentence
+
+== Toxicity check ==
+
+Generator -> Moderator : checkToxicity(sentence)
+Moderator --> Generator : true / false
+
+alt excessive toxicity
+    loop foreach list
+        Generator -> Generator : list.clear()
+    end
+    Generator -> Generator : regenerate sentence
+end
+
+Generator --> Controller : generated sentence (or error message)
+Controller --> FE : JSON with result
+FE --> User : Display sentence
+
+@enduml
+```
+
+---
+## 8. Technical notes
 - The system uses Google Natural Language API for syntactic analysis
 - Word lists are loaded from .txt files
 - Sentence generation uses predefined patterns and random words
@@ -569,7 +875,7 @@ package NoSenGen {
 
 ---
 
-## 8. Final considerations
+## 9. Final considerations
 - Modularity and scalability: easy to extend with new templates and languages
 - Easily customizable via configuration and dictionaries
 - The architecture supports future API integrations and features

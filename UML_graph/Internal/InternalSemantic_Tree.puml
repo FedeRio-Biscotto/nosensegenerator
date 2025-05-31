@@ -1,0 +1,13 @@
+@startuml InternalSemantic_Tree
+!include Graphic.puml
+
+participant Generator as gen
+participant GoogleLanguageAPI as api
+
+gen -> api: Semantic_Tree(String sentence, String apiKey)
+
+api -> api: CallApi(sentence, ApiKey)
+api -> api: Save tokens into a String
+api --> gen: return the String
+
+@enduml
