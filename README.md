@@ -46,6 +46,7 @@ To run this project, you will need:
 - Internet connection (for dependency resolution)  
 - Operating system: Linux / Windows / macOS  
 - Git (to clone the repository)
+- A valid Google Cloud API Key
 
 ### Installation Steps 
 Check if Maven is installed (optional)
